@@ -17,7 +17,7 @@ namespace WebApplication1.Classes
             this.name = name;
 			course = course;
         }
-		public override bool Equals(object obj) => obj == null || obj.GetType() != typeof(Person) ? false : obj.GetHashCode() == id;
+		public override bool Equals(object obj) => obj != null && obj.GetType() == typeof(Person) && obj.GetHashCode() == id;
 		public override int GetHashCode() => id;
 	}
 }

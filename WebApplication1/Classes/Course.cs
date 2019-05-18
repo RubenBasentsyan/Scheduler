@@ -1,23 +1,24 @@
 ﻿using System;
+using WebApplication1.Helpers;
 using System.Collections.Generic;
 
 namespace WebApplication1.Classes
 {
     public class Course : IEquatable<Course>
 	{
-        public int id { get ; set; }
-        public string name { get; private set; }
-
+        public int Id { get ; set; }
+        public string Name { get; /*private set;*/ }
+        public Color Color { get;  set; }
 		/// <summary>
 		/// both teachers and students of the course
 		/// </summary>
         public HashSet<int> participantIds { get; set; }
-		//private HashSet<Course> adjacentCourses { get; set; }
-        public Course( Courses crs  /*int id, string name, HashSet<Person> participants,  HashSet<Course> adjacentCourses*/)
+		
+        private Course( Courses crs  /*int id, string name, HashSet<Person> participants,  HashSet<Course> adjacentCourses*/)
         {
 
-            this.id = crs.Id;
-            this.name = crs.Name;
+            this.Id = crs.Id;
+            this.Name = crs.Name;
             //this.participants = participants;
             //this.adjacentCourses = adjacentCourses;
         }
@@ -27,15 +28,17 @@ namespace WebApplication1.Classes
             return new Course(c);
         }
 
-        public bool compareStudents(Course course)
+        public bool CompareStudents(Course course)
         {
             return true;
         }
-		
-		public bool Equals(Course other) => other == null ? false : id == other.id;
-		public override bool Equals(object obj) => obj == null || obj.GetType() != typeof(Course) ? false : obj.GetHashCode() == id;
-		public override int GetHashCode() => id;
-	}
+        
+
+		public bool Equals(Course other) => other != null && Id == other.Id;
+		public override bool Equals(object obj) => obj != null && obj.GetType() == typeof(Course) && obj.GetHashCode() == Id;
+		public override int GetHashCode() => Id.GetHashCode();
+        
+    }
 
 	public class CustomTupleComparer : IEqualityComparer<(int,int)>
 	{

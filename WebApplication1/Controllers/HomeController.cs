@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using WebApplication1.Helpers;
 
@@ -12,8 +9,8 @@ namespace WebApplication1.Controllers
         public ActionResult Index()
         {
             Graph gr = new Graph();
-            ViewBag.Vaxo = gr.graph.Vertices;
-            ViewBag.Gago = gr.graph.Edges;
+            gr.ColorGraph();
+            ViewBag.Suro = gr.graph.Vertices.ToList();
             return View();
         }
 
