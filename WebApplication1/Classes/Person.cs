@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using WebApplication1.Models;
+﻿using System.Collections.Generic;
 
-namespace WebApplication1.Models
+namespace WebApplication1.Classes
 {
 	/// <summary>
 	/// Student or Teacher
 	/// </summary>
-    public class Person
+	public class Person
     {
         public int id { get; set; }
         private string name { get; set; }

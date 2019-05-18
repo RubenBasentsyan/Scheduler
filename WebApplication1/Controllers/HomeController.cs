@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebApplication1.Helpers;
 
 namespace WebApplication1.Controllers
 {
@@ -10,6 +11,9 @@ namespace WebApplication1.Controllers
     {
         public ActionResult Index()
         {
+            Graph gr = new Graph();
+            ViewBag.Vaxo = gr.graph.Vertices;
+            ViewBag.Gago = gr.graph.Edges;
             return View();
         }
 

@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SchedulerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Courses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Entrollments">
+          <Key>
+            <PropertyRef Name="EnrollmentId" />
+          </Key>
+          <Property Name="Person_Fk" Type="int" Nullable="false" />
+          <Property Name="Course_Fk" Type="int" Nullable="false" />
+          <Property Name="EnrollmentId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Persons">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Entrollments_ToCourses">
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
+          <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Courses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Entrollments">
+              <PropertyRef Name="Course_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Entrollments_ToPersons">
+          <End Role="Persons" Type="Self.Persons" Multiplicity="1" />
+          <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Persons">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Entrollments">
+              <PropertyRef Name="Person_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SchedulerModelStoreContainer">
+          <EntitySet Name="Courses" EntityType="Self.Courses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Entrollments" EntityType="Self.Entrollments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Persons" EntityType="Self.Persons" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Entrollments_ToCourses" Association="Self.FK_Entrollments_ToCourses">
+            <End Role="Courses" EntitySet="Courses" />
+            <End Role="Entrollments" EntitySet="Entrollments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Entrollments_ToPersons" Association="Self.FK_Entrollments_ToPersons">
+            <End Role="Persons" EntitySet="Persons" />
+            <End Role="Entrollments" EntitySet="Entrollments" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SchedulerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Courses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Courses" ToRole="Entrollments" />
+        </EntityType>
+        <EntityType Name="Entrollments">
+          <Key>
+            <PropertyRef Name="EnrollmentId" />
+          </Key>
+          <Property Name="Person_Fk" Type="Int32" Nullable="false" />
+          <Property Name="Course_Fk" Type="Int32" Nullable="false" />
+          <Property Name="EnrollmentId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Courses" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Entrollments" ToRole="Courses" />
+          <NavigationProperty Name="Persons" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Entrollments" ToRole="Persons" />
+        </EntityType>
+        <EntityType Name="Persons">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Persons" ToRole="Entrollments" />
+        </EntityType>
+        <Association Name="FK_Entrollments_ToCourses">
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
+          <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Courses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Entrollments">
+              <PropertyRef Name="Course_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Entrollments_ToPersons">
+          <End Role="Persons" Type="Self.Persons" Multiplicity="1" />
+          <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Persons">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Entrollments">
+              <PropertyRef Name="Person_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SchedulerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Courses" EntityType="Self.Courses" />
+          <EntitySet Name="Entrollments" EntityType="Self.Entrollments" />
+          <EntitySet Name="Persons" EntityType="Self.Persons" />
+          <AssociationSet Name="FK_Entrollments_ToCourses" Association="Self.FK_Entrollments_ToCourses">
+            <End Role="Courses" EntitySet="Courses" />
+            <End Role="Entrollments" EntitySet="Entrollments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Entrollments_ToPersons" Association="Self.FK_Entrollments_ToPersons">
+            <End Role="Persons" EntitySet="Persons" />
+            <End Role="Entrollments" EntitySet="Entrollments" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SchedulerModelStoreContainer" CdmEntityContainer="SchedulerEntities">
+          <EntitySetMapping Name="Courses">
+            <EntityTypeMapping TypeName="SchedulerModel.Courses">
+              <MappingFragment StoreEntitySet="Courses">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Entrollments">
+            <EntityTypeMapping TypeName="SchedulerModel.Entrollments">
+              <MappingFragment StoreEntitySet="Entrollments">
+                <ScalarProperty Name="Person_Fk" ColumnName="Person_Fk" />
+                <ScalarProperty Name="Course_Fk" ColumnName="Course_Fk" />
+                <ScalarProperty Name="EnrollmentId" ColumnName="EnrollmentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Persons">
+            <EntityTypeMapping TypeName="SchedulerModel.Persons">
+              <MappingFragment StoreEntitySet="Persons">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
