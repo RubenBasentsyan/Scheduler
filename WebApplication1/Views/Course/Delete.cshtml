@@ -1,0 +1,35 @@
+﻿@model WebApplication1.Models.ViewModels.CourseViewModel
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+
+    <h4>Course</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.CourseId, htmlAttributes: new { value = Model.CourseId })
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-light" /> |
+            @Html.ActionLink("Back to Courses" "Index")
+        </div>
+    }
+</div>

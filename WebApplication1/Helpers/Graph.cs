@@ -6,119 +6,125 @@ using WebApplication1.Classes;
 
 namespace WebApplication1.Helpers
 {
-    public class Graph
+    public static class Graph
     {
-        public UndirectedGraph<Course, Edge> graph;
-
-        public Graph()
+        public static UndirectedGraph<Course, Edge> GraphInstance { get; private set; }
+        /// <summary>
+        /// Populates the graph.
+        /// </summary>
+        public static void PopulateGraph()
         {
             //degrees_totalWeights = new Dictionary<int, (int, int)>();
             using (SchedulerEntities db = new SchedulerEntities())
             {
-                graph = new UndirectedGraph<Course, Edge>(false);
+                GraphInstance = new UndirectedGraph<Course, Edge>(false);
                 Course temp;
                 foreach (Courses course in db.Courses)
                 {
                     temp = (Course)course;
                     temp.participantIds = new HashSet<int>(course.Entrollments.Select(e => e.Person_Fk));
-                    graph.AddVertex(temp);
+                    GraphInstance.AddVertex(temp);
                 }
                 PopulateEdges();
             }
         }
-
-        private void PopulateEdges()
+        /// <summary>
+        /// Populates the edges.
+        /// </summary>
+        private static void PopulateEdges()
         {
-            foreach (Course first in graph.Vertices)
+            foreach (Course first in GraphInstance.Vertices)
             {
-                foreach (Course second in graph.Vertices)
+                foreach (Course second in GraphInstance.Vertices)
                 {
-                    if (graph.ContainsEdge(first, second))
+                    if (GraphInstance.ContainsEdge(first, second))
                         continue;
                     if (!first.Equals(second) && first.participantIds.Overlaps(second.participantIds))
                     {
                         HashSet<int> intersection = new HashSet<int>(first.participantIds);
                         intersection.IntersectWith(second.participantIds);
-                        graph.AddEdge(new Edge(first, second, intersection.Count));
+                        GraphInstance.AddEdge(new Edge(first, second, intersection.Count));
                     }
                 }
             }
         }
-        public void ColorGraph()
+        /// <summary>
+        /// Colors the graph.
+        /// </summary>
+        public static void ColorGraph()
         {
-            foreach (var course in graph.Vertices.OrderByDescending(crs => graph.AdjacentDegree(crs)).ThenByDescending(crs => graph.AdjacentEdges(crs).Sum(e=>e.weight)))
+            foreach (var course in GraphInstance.Vertices.OrderByDescending(crs => GraphInstance.AdjacentDegree(crs))
+                .ThenByDescending(crs => GraphInstance.AdjacentEdges(crs)
+                    .Sum(e => e.weight)))
             {
-                if (course.Color != null) continue;
+                if (course.Color != null)
+                    continue;
                 ColorAppropriately(course);
-                foreach (var ret in GetAdjacentVertices(course)) ColorAppropriately(ret);
+                foreach (var ret in GetAdjacentVertices(course))
+                    ColorAppropriately(ret);
             }
         }
-
-        private IEnumerable<Course> GetAdjacentVertices(Course crs)
+        /// <summary>
+        /// Gets the courses that have at least one common student with crs
+        /// </summary>
+        /// <param name="crs">The course</param>
+        /// <returns>The li</returns>
+        /// <exception cref="ArgumentNullException">When course is null</exception>
+        private static IEnumerable<Course> GetAdjacentVertices(Course crs)
         {
-            if (graph != null)
-                return graph.AdjacentEdges(crs)
-                    .Select(edge => edge.Source.Equals(crs) ? 
-                        edge.Target : edge.Source)
+            if (GraphInstance != null)
+                return GraphInstance.AdjacentEdges(crs)
+                    .Select(edge => edge.Source.Equals(crs)
+                        ? edge.Target
+                        : edge.Source)
+                    .OrderByDescending(course => GraphInstance.AdjacentDegree(course))
+                    .ThenByDescending(course => GraphInstance.AdjacentEdges(course)
+                        .Sum(e => e.weight))
                     .ToList();
             throw new ArgumentNullException();
         }
-
-        private bool ColorAppropriately(Course crs)
+        /// <summary>
+        /// Colors a course with the best possible color
+        /// </summary>
+        /// <param name="crs">The CRS.</param>
+        private static void ColorAppropriately(Course crs)
         {
             bool valid = true;
             TimeSlot t;
-            foreach(Day d in (Day[])Enum.GetValues(typeof(Day)))
+            foreach (var d in (Day[])Enum.GetValues(typeof(Day)))
             {
-                for (t = 0; (int) t < Enum.GetNames(typeof(TimeSlot)).Length; t++)
+                for (t = 0; (int)t < Enum.GetNames(typeof(TimeSlot)).Length; t++)
                 {
                     valid = true;
-                    if (!Color.EnoughRoomExists(d, t))
-                    {
-                        valid = false;
-                        continue;
-                    }
-                    if (!GetAdjacentVertices(crs).All(adjCourse =>
-                        (adjCourse.Color == null || adjCourse.Color.day != d || adjCourse.Color.timeSlot != t)))
-                    {
-                        valid = false;
-                        continue;
-                    }
-                    if (!ThreeExamConstraint(crs, d, t))
-                    {
-                        valid = false;
-                        continue;
-                    }
-                    break;
+                    if (Color.EnoughRoomExists(d, t) && GetAdjacentVertices(crs).All(adjCourse =>
+                            (adjCourse.Color == null || adjCourse.Color.day != d || adjCourse.Color.timeSlot != t)) &&
+                        ThreeExamConstraint(crs, d, t))
+                        break;
+                    valid = false;
                 }
                 if (!valid) continue;
                 Color.SetCourseColor(d, t, crs);
-                return true;
+                return;
             }
-            return false;
+            throw new Exception("Impossible to make a schedule");
         }
-
-        private bool ThreeExamConstraint(Course course, Day day, TimeSlot timeSlot)
+        /// <summary>
+        /// Checks whether the 3 exam constraint is satisfied.
+        /// </summary>
+        /// <param name="course">The course.</param>
+        /// <param name="day">The day.</param>
+        /// <param name="timeSlot">The time slot.</param>
+        /// <returns>True if the 3 exam constraint is satisfied, false o.w.</returns>
+        private static bool ThreeExamConstraint(Course course, Day day, TimeSlot timeSlot)
         {
             foreach (var student in course.participantIds)
             {
-                //if (((TimeSlot[])Enum.GetValues(typeof(TimeSlot)))
-                //        .Any(t => 
-                //            graph.Vertices
-                //                .Count(crs => 
-                //                    crs.Color != null && crs.Color.day == day && crs.Color.timeSlot == t &&
-                //                    crs.participantIds.Contains(student)) 
-                //            > 1))
-                int counter = 0;
-                foreach (TimeSlot t in (TimeSlot[]) Enum.GetValues(typeof(TimeSlot)))
-                {
-                    if (graph.Vertices.Any(crs =>
-                        crs.Color != null && crs.Color.day == day && crs.Color.timeSlot == t &&
-                        crs.participantIds.Contains(student)))
-                        counter++;
-                    if (counter > 1)
-                        return false;
-                }
+                
+                if (((TimeSlot[])Enum.GetValues(typeof(TimeSlot))).Count(t => GraphInstance.Vertices.Any(crs =>
+                       crs.Color != null && crs.Color.day == day && crs.Color.timeSlot == t &&
+                       crs.participantIds.Contains(student))) > 1)
+                    return false;
+                //}
             }
             return true;
         }

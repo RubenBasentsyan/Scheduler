@@ -1,0 +1,33 @@
+﻿@using WebApplication1.Models.ViewModels.Enrollments
+@model IEnumerable<WebApplication1.Models.ViewModels.Enrollments.DisplayEnrollmentVm>
+
+@{
+    ViewBag.Title = ViewBag.Title = $"{Model?.First().PersonName ?? "Null Person"}'s Enrollments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2> @ViewBag.PersonName's Enrollments  </h2>
+
+<p> 
+    @Html.ActionLink("Enroll In a New Course", "Create",routeValues:new{ Model?.First().PersonId, isPersonEnrolling = true},htmlAttributes: new{@class = "btn btn-outline-success "})
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CourseName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model ?? new List<DisplayEnrollmentVm>()){
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CourseName)
+        </td>
+        <td>
+            @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,19 +1,23 @@
-﻿using System.Linq;
+﻿ using System.Linq;
 using System.Web.Mvc;
 using WebApplication1.Helpers;
+ using WebApplication1.Services;
 
-namespace WebApplication1.Controllers
+ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            Graph gr = new Graph();
-            gr.ColorGraph();
-            ViewBag.Suro = gr.graph.Vertices.ToList();
-            return View();
+            var schedule = EntityFetcher.FetchSchedule();
+            return View(schedule);
         }
 
+        public ActionResult Reschedule()
+        {
+            EntityModifier.Reschedule();
+            return RedirectToAction("Index");
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -21,11 +25,6 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
+        
     }
 }

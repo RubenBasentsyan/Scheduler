@@ -1,0 +1,39 @@
+﻿@model IEnumerable<WebApplication1.Models.ViewModels.ParticipantsViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Participants</h2>
+
+<p>
+    @Html.ActionLink("New Participant", "Create",null,htmlAttributes: new{ @class = "btn btn-outline-success"})
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
+    @{ int count = 0; }
+
+    @foreach (var item in Model)
+    {
+        count++;
+    <tr>
+        <td>@count</td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Rename", "Edit", new { id = item.PersonId }) |
+            @Html.ActionLink("Enrollments", "PersonEnrollments", "Enrollment", new { id = item.PersonId }, null) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.PersonId })
+        </td>
+    </tr>
+    }
+
+</table>
