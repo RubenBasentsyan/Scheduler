@@ -25,6 +25,7 @@ namespace WebApplication1
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Colors> Colors { get; set; }
         public virtual DbSet<Courses> Courses { get; set; }
         public virtual DbSet<Entrollments> Entrollments { get; set; }
         public virtual DbSet<Persons> Persons { get; set; }

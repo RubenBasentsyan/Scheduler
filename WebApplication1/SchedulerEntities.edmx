@@ -4,7 +4,15 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SchedulerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ScheduleModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Colors">
+          <Key>
+            <PropertyRef Name="Course_Fk" />
+          </Key>
+          <Property Name="Course_Fk" Type="int" Nullable="false" />
+          <Property Name="Day" Type="int" />
+          <Property Name="TimeSlot" Type="int" />
+        </EntityType>
         <EntityType Name="Courses">
           <Key>
             <PropertyRef Name="Id" />
@@ -27,8 +35,24 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Colors_ToCourses">
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Colors" Type="Self.Colors" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Courses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Colors">
+              <PropertyRef Name="Course_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Entrollments_ToCourses">
-          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Courses">
@@ -40,7 +64,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Entrollments_ToPersons">
-          <End Role="Persons" Type="Self.Persons" Multiplicity="1" />
+          <End Role="Persons" Type="Self.Persons" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Persons">
@@ -51,10 +77,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SchedulerModelStoreContainer">
+        <EntityContainer Name="ScheduleModelStoreContainer">
+          <EntitySet Name="Colors" EntityType="Self.Colors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Courses" EntityType="Self.Courses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Entrollments" EntityType="Self.Entrollments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Persons" EntityType="Self.Persons" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Colors_ToCourses" Association="Self.FK_Colors_ToCourses">
+            <End Role="Courses" EntitySet="Courses" />
+            <End Role="Colors" EntitySet="Colors" />
+          </AssociationSet>
           <AssociationSet Name="FK_Entrollments_ToCourses" Association="Self.FK_Entrollments_ToCourses">
             <End Role="Courses" EntitySet="Courses" />
             <End Role="Entrollments" EntitySet="Entrollments" />
@@ -68,13 +99,23 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="SchedulerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="ScheduleModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Colors">
+          <Key>
+            <PropertyRef Name="Course_Fk" />
+          </Key>
+          <Property Name="Course_Fk" Type="Int32" Nullable="false" />
+          <Property Name="Day" Type="Int32" />
+          <Property Name="TimeSlot" Type="Int32" />
+          <NavigationProperty Name="Courses" Relationship="Self.FK_Colors_ToCourses" FromRole="Colors" ToRole="Courses" />
+        </EntityType>
         <EntityType Name="Courses">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Colors" Relationship="Self.FK_Colors_ToCourses" FromRole="Courses" ToRole="Colors" />
           <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Courses" ToRole="Entrollments" />
         </EntityType>
         <EntityType Name="Entrollments">
@@ -95,8 +136,24 @@
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Persons" ToRole="Entrollments" />
         </EntityType>
+        <Association Name="FK_Colors_ToCourses">
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Colors" Type="Self.Colors" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Courses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Colors">
+              <PropertyRef Name="Course_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Entrollments_ToCourses">
-          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Courses">
@@ -108,7 +165,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Entrollments_ToPersons">
-          <End Role="Persons" Type="Self.Persons" Multiplicity="1" />
+          <End Role="Persons" Type="Self.Persons" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Entrollments" Type="Self.Entrollments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Persons">
@@ -120,9 +179,14 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SchedulerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Colors" EntityType="Self.Colors" />
           <EntitySet Name="Courses" EntityType="Self.Courses" />
           <EntitySet Name="Entrollments" EntityType="Self.Entrollments" />
           <EntitySet Name="Persons" EntityType="Self.Persons" />
+          <AssociationSet Name="FK_Colors_ToCourses" Association="Self.FK_Colors_ToCourses">
+            <End Role="Courses" EntitySet="Courses" />
+            <End Role="Colors" EntitySet="Colors" />
+          </AssociationSet>
           <AssociationSet Name="FK_Entrollments_ToCourses" Association="Self.FK_Entrollments_ToCourses">
             <End Role="Courses" EntitySet="Courses" />
             <End Role="Entrollments" EntitySet="Entrollments" />
@@ -137,9 +201,18 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SchedulerModelStoreContainer" CdmEntityContainer="SchedulerEntities">
+        <EntityContainerMapping StorageEntityContainer="ScheduleModelStoreContainer" CdmEntityContainer="SchedulerEntities">
+          <EntitySetMapping Name="Colors">
+            <EntityTypeMapping TypeName="ScheduleModel.Colors">
+              <MappingFragment StoreEntitySet="Colors">
+                <ScalarProperty Name="Course_Fk" ColumnName="Course_Fk" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="TimeSlot" ColumnName="TimeSlot" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Courses">
-            <EntityTypeMapping TypeName="SchedulerModel.Courses">
+            <EntityTypeMapping TypeName="ScheduleModel.Courses">
               <MappingFragment StoreEntitySet="Courses">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -147,7 +220,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Entrollments">
-            <EntityTypeMapping TypeName="SchedulerModel.Entrollments">
+            <EntityTypeMapping TypeName="ScheduleModel.Entrollments">
               <MappingFragment StoreEntitySet="Entrollments">
                 <ScalarProperty Name="Person_Fk" ColumnName="Person_Fk" />
                 <ScalarProperty Name="Course_Fk" ColumnName="Course_Fk" />
@@ -156,7 +229,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Persons">
-            <EntityTypeMapping TypeName="SchedulerModel.Persons">
+            <EntityTypeMapping TypeName="ScheduleModel.Persons">
               <MappingFragment StoreEntitySet="Persons">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
