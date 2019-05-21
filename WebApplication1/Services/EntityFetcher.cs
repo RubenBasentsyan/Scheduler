@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web.Mvc;
 using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Models.ViewModels.Enrollments;
@@ -100,6 +101,26 @@ namespace WebApplication1.Services
                         CourseId = e.Course_Fk,
                         PersonName = personName
                     }).ToList();
+            }
+        }
+
+        public static IEnumerable<CourseViewModel> FetchCoursesNotEnrolled (int PersonId)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                var enrolledCourseIds = new HashSet<int>(db.Persons.Find(PersonId).Entrollments.Select(w => w.Course_Fk));
+                return db.Courses.Where(c => !enrolledCourseIds.Contains(c.Id)).Select(c => new CourseViewModel() { CourseId = c.Id, Name = c.Name }).ToList();
+
+            }
+        }
+
+        public static IEnumerable<ParticipantsViewModel> FetchParticipantsNotEnrolled(int CourseId)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                var enrolledParticipantIds = new HashSet<int>(db.Courses.Find(CourseId).Entrollments.Select(w => w.Person_Fk));
+                return db.Persons.Where(c => !enrolledParticipantIds.Contains(c.Id)).Select(c => new ParticipantsViewModel() { PersonId = c.Id, Name = c.Name }).ToList();
+
             }
         }
     }

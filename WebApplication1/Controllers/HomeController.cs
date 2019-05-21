@@ -18,10 +18,10 @@ using WebApplication1.Helpers;
             EntityModifier.Reschedule();
             return RedirectToAction("Index");
         }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 

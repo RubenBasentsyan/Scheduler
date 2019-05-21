@@ -28,6 +28,7 @@ namespace WebApplication1.Helpers
         {
             return Limits[(int) d, (int) t] != ConcurrencyLimit;
         }
+
         public Day day { get; private set; }
         public TimeSlot timeSlot { get; private set; }
         private Color(Day day, TimeSlot timeSlot)

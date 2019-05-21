@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Data;
+using System.Web.Mvc;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Services;
 
@@ -43,7 +44,7 @@ namespace WebApplication1.Controllers
                 participant = EntityFetcher.FetchParticipantWithId(id);
                 return View(participant);
             }
-            catch
+            catch(DataException)
             {
                 return RedirectToAction("Index");
             }
@@ -74,7 +75,7 @@ namespace WebApplication1.Controllers
                 participant = EntityFetcher.FetchParticipantWithId(id);
                 return View(participant);
             }
-            catch
+            catch (DataException)
             {
                 return RedirectToAction("Index");
             }

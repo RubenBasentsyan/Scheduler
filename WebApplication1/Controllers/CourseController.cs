@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -49,7 +50,7 @@ namespace WebApplication1.Controllers
                 course = EntityFetcher.FetchCourseWithId(id);
                 return View(course);
             }
-            catch
+            catch(DataException)
             {
                 return RedirectToAction("Index");
             }
@@ -80,7 +81,7 @@ namespace WebApplication1.Controllers
                 course = EntityFetcher.FetchCourseWithId(id);
                 return View(course);
             }
-            catch
+            catch(DataException)
             {
                 return RedirectToAction("Index");
             }

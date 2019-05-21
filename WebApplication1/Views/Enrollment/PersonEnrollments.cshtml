@@ -9,7 +9,7 @@
 <h2> @ViewBag.PersonName's Enrollments  </h2>
 
 <p> 
-    @Html.ActionLink("Enroll In a New Course", "Create",routeValues:new{ Model?.First().PersonId, isPersonEnrolling = true},htmlAttributes: new{@class = "btn btn-outline-success "})
+    @Html.ActionLink("Enroll In a New Course", "CreateForParticipant",routeValues:new{ participantId = Model?.First().PersonId},htmlAttributes: new{@class = "btn btn-outline-success "})
 </p>
 <table class="table">
     <tr>

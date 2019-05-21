@@ -2,15 +2,18 @@
 @model IEnumerable<WebApplication1.Models.ViewModels.Enrollments.DisplayEnrollmentVm>
 
 @{
-    ViewBag.Title = $"Enrollments for {ViewBag.CourseName.ToString()}";
+    ViewBag.Title = $"Enrollments for {ViewBag.Course?.Name.ToString()}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Enrollments for @ViewBag.CourseName.ToString()</h2>
+<h2>Enrollments for @{ViewBag.Course?.Name.ToString()}</h2>
+
+
 
 <p>
-    @Html.ActionLink("Add New Student To Course", "Create",routeValues: new { Model?.First().CourseId, isPersonEnrolling = false },htmlAttributes: new { @class = "btn btn-outline-success "})
+    @Html.ActionLink("Add New Student To Course", "CreateForCourse", routeValues: new { courseId = ViewBag.Course.CourseId }, htmlAttributes: new { @class = "btn btn-outline-success " })
 </p>
+
 <table class="table">
     <tr>
         <th>
@@ -19,15 +22,16 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model ?? new List<DisplayEnrollmentVm>()) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.PersonName)
-        </td>
-        <td>
-            @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model ?? new List<DisplayEnrollmentVm>())
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PersonName)
+            </td>
+            <td>
+                @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId })
+            </td>
+        </tr>
+    }
 
 </table>

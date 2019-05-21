@@ -2,6 +2,7 @@
 using System.Linq;
 using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels;
+using WebApplication1.Models.ViewModels.Enrollments;
 
 namespace WebApplication1.Services
 {
@@ -87,6 +88,16 @@ namespace WebApplication1.Services
                     throw new DataException(
                         "The table Course does not contain an entry corresponding to the provided primary key");
                 db.Courses.Remove(dbPerson);
+                db.SaveChanges();
+            }
+        }
+
+        public static void CreateEnrollment (CreateEnrollmentVm enrollment)
+        {
+            using (var db  = new SchedulerEntities())
+            {
+                var dbEnrollment = new Entrollments() { Course_Fk = enrollment.CourseId, Person_Fk = enrollment.ParticipantId };
+                db.Entrollments.Add(dbEnrollment);
                 db.SaveChanges();
             }
         }

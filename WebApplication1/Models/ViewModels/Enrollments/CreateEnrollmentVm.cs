@@ -10,9 +10,9 @@ namespace WebApplication1.Models.ViewModels.Enrollments
         public int CourseId { get; set; }
         public int ParticipantId { get; set; }
         [ScaffoldColumn(false), Display(AutoGenerateField = false)]
-        public List<CourseViewModel> CoursesList { get; set; }
+        public IEnumerable<CourseViewModel> CoursesList { get; set; }
         [ScaffoldColumn(false), Display(AutoGenerateField = false)]
-        public List<ParticipantsViewModel> ParticipantList { get; set; }
+        public IEnumerable<ParticipantsViewModel> ParticipantList { get; set; }
 
     }
 }
