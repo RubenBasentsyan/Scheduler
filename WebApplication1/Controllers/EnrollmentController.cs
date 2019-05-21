@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
         public ActionResult PersonEnrollments(int personId)
         {
             var enrollments = EntityFetcher.FetchPersonEnrollments(personId);
-            ViewBag.PersonName = EntityFetcher.FetchParticipantWithId(personId)?.Name;
+            ViewBag.PersonName = enrollments.First().PersonName;
             return View(enrollments);
         }
 

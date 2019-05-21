@@ -2,16 +2,16 @@
 @model IEnumerable<WebApplication1.Models.ViewModels.Enrollments.DisplayEnrollmentVm>
 
 @{
-    ViewBag.Title = $"Enrollments for {ViewBag.CourseName}";
+    ViewBag.Title = $"Enrollments for {ViewBag.Course?.Name.ToString()}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Enrollments for @(ViewBag?.Name)</h2>
+<h2>Enrollments for @{ViewBag.Course?.Name.ToString()}</h2>
 
 
 
 <p>
-    @Html.ActionLink("Add new enrollment to course", "CreateForCourse", routeValues: new { courseId = ViewBag.Course.CourseId }, htmlAttributes: new { @class = "btn btn-outline-success " })
+    @Html.ActionLink("Add New Student To Course", "CreateForCourse", routeValues: new { courseId = ViewBag.Course.CourseId }, htmlAttributes: new { @class = "btn btn-outline-success " })
 </p>
 
 <table class="table">
