@@ -22,7 +22,24 @@ namespace WebApplication1.Helpers
     {
         private static Color[,] Colors = new Color[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
         private static int[,] Limits = new int[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
-        private static readonly int ConcurrencyLimit = 5;
+        private static int ConcurrencyLimit = 5;
+        /// <summary>
+        /// Sets the concurrency limit
+        /// </summary>
+        /// <param name="limit">The new concurrency limit</param>
+        /// <returns>True if the value changed, false otherwise</returns>
+        public static bool SetConcurrencyLimit(int limit)
+        {
+            if (limit == ConcurrencyLimit)
+                return false;
+            ConcurrencyLimit = limit;
+            return true;
+        }
+
+        public static void ResetLimits()
+        {
+            Limits =  new int[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
+        }
 
         public static bool EnoughRoomExists(Day d, TimeSlot t)
         {

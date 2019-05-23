@@ -4,6 +4,7 @@ namespace WebApplication1.Models.ViewModels
 {
     public class CourseViewModel
     {
+        [Key]
         [ScaffoldColumn(false), Display(AutoGenerateField = false)]
         public int CourseId { get; set; }
 

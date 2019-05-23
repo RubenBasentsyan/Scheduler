@@ -12,7 +12,7 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                var dbCourse = new Courses() { Name = course.Name };
+                Courses dbCourse = new Courses() { Name = course.Name };
                 db.Courses.Add(dbCourse);
                 db.SaveChanges();
             }
@@ -20,7 +20,7 @@ namespace WebApplication1.Services
 
         public static void EditCourse ( CourseViewModel course )
         {
-            using (var db = new SchedulerEntities())
+            using (SchedulerEntities db = new SchedulerEntities())
             {
                 var dbCourse = db.Courses.Find(course.CourseId);
                 if(dbCourse==null)

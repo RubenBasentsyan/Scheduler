@@ -14,7 +14,7 @@ namespace WebApplication1.Helpers
         /// </summary>
         public static void PopulateGraph()
         {
-            //degrees_totalWeights = new Dictionary<int, (int, int)>();
+            Color.ResetLimits();
             using (SchedulerEntities db = new SchedulerEntities())
             {
                 GraphInstance = new UndirectedGraph<Course, Edge>(false);
@@ -119,12 +119,10 @@ namespace WebApplication1.Helpers
         {
             foreach (var student in course.participantIds)
             {
-                
                 if (((TimeSlot[])Enum.GetValues(typeof(TimeSlot))).Count(t => GraphInstance.Vertices.Any(crs =>
                        crs.Color != null && crs.Color.day == day && crs.Color.timeSlot == t &&
                        crs.participantIds.Contains(student))) > 1)
                     return false;
-                //}
             }
             return true;
         }
