@@ -2,18 +2,18 @@
 @model IEnumerable<WebApplication1.Models.ViewModels.CourseViewModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Courses";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Course</h2>
+<h2>Courses</h2>
 
 <p>
     @Html.ActionLink("New Course", "Create", null, htmlAttributes: new { @class = "btn btn-outline-success" })
 </p>
-<table class="table">
+<table class="table table-striped table-bordered table-hover custom-table">
     <tr>
-        <th></th>
+        <th>#</th>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
@@ -29,9 +29,9 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Rename", "Edit", new {id = item.CourseId}) |
-                @Html.ActionLink("Enrollments","CourseEnrollments","Enrollment", new {courseId = item.CourseId},null) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CourseId })
+                @Html.ActionLink("Rename", "Edit", new {id = item.CourseId},htmlAttributes: new { @class = "btn btn-outline-success btn-sm" }) 
+                @Html.ActionLink("Enrollments","CourseEnrollments","Enrollment", new {courseId = item.CourseId}, htmlAttributes: new { @class = "btn btn-outline-info btn-sm" }) 
+                @Html.ActionLink("Delete", "Delete", new { id = item.CourseId }, htmlAttributes: new { @class = "btn btn-outline-danger btn-sm" })
             </td>
         </tr>
     }

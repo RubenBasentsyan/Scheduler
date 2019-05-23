@@ -20,9 +20,9 @@ namespace WebApplication1.Helpers
     }
     public class Color
     {
-        private static Color[,] Colors = new Color[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
-        private static int[,] Limits = new int[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
-        private static int ConcurrencyLimit = 5;
+        private static readonly Color[,] Colors = new Color[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
+        private static int[,] _limits = new int[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
+        private static int _concurrencyLimit = 5;
         /// <summary>
         /// Sets the concurrency limit
         /// </summary>
@@ -30,35 +30,35 @@ namespace WebApplication1.Helpers
         /// <returns>True if the value changed, false otherwise</returns>
         public static bool SetConcurrencyLimit(int limit)
         {
-            if (limit == ConcurrencyLimit)
+            if (limit == _concurrencyLimit)
                 return false;
-            ConcurrencyLimit = limit;
+            _concurrencyLimit = limit;
             return true;
         }
 
         public static void ResetLimits()
         {
-            Limits =  new int[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
+            _limits =  new int[Enum.GetNames(typeof(Day)).Length, Enum.GetNames(typeof(TimeSlot)).Length];
         }
 
         public static bool EnoughRoomExists(Day d, TimeSlot t)
         {
-            return Limits[(int) d, (int) t] != ConcurrencyLimit;
+            return _limits[(int) d, (int) t] != _concurrencyLimit;
         }
 
-        public Day day { get; private set; }
-        public TimeSlot timeSlot { get; private set; }
+        public Day Day { get; }
+        public TimeSlot TimeSlot { get; }
         private Color(Day day, TimeSlot timeSlot)
         {
-            this.day = day;
-            this.timeSlot = timeSlot;
+            this.Day = day;
+            this.TimeSlot = timeSlot;
         }
         public static bool SetCourseColor(Day d, TimeSlot t, Course course)
         {
             if (Colors[(int)d, (int)t] == null) Colors[(int)d, (int)t] = new Color(d, t);
-            if (Limits[(int) d, (int) t] >= ConcurrencyLimit) throw new ConcurrencyLimitExceededException();
+            if (_limits[(int) d, (int) t] >= _concurrencyLimit) throw new ConcurrencyLimitExceededException();
             course.Color = Colors[(int)d, (int)t];
-            Limits[(int)d, (int)t]++;
+            _limits[(int)d, (int)t]++;
             return true;
         }
     }

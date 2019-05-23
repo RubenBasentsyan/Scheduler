@@ -272,6 +272,7 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="ForRubo.dacpac" />
     <EntityDeploy Include="SchedulerEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SchedulerEntities.Designer.cs</LastGenOutput>
@@ -279,7 +280,6 @@
     <Content Include="SchedulerEntities.edmx.diagram">
       <DependentUpon>SchedulerEntities.edmx</DependentUpon>
     </Content>
-    <Content Include="ForRubo.dacpac" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -336,10 +336,10 @@
     <Content Include="Views\Participant\Delete.cshtml" />
     <Content Include="Views\Enrollment\CourseEnrollments.cshtml" />
     <Content Include="Views\Enrollment\PersonEnrollments.cshtml" />
+    <Content Include="Views\Enrollment\CreateForCourse.cshtml" />
+    <Content Include="Views\Enrollment\CreateForParticipant.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\ViewModels\ParticipantEnrollments\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

@@ -2,7 +2,15 @@
     padding-top: 50px;
     padding-bottom: 20px;
 }
-
+.custom-table {
+    text-align: center;
+    margin: 0 auto;
+    width: 75%;
+}
+.custom-table th:last-child, td:last-child {
+    width: 1%;
+    white-space: nowrap;
+}
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;

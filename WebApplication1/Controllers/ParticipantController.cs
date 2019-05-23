@@ -84,20 +84,17 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Delete(ParticipantsViewModel participant)
         {
-            if (ModelState["CourseId"] != null)
+            try
             {
-                try
-                {
-                    EntityModifier.DeleteParticipant(participant);
-                }
-                catch
-                {
-                    ModelState.AddModelError("Name", "Can't modify the participant.");
-                }
-
-                return RedirectToAction("Index");
+                EntityModifier.DeleteParticipant(participant);
             }
-            return View(participant);
+            catch
+            {
+                ModelState.AddModelError("Name", "Can't modify the participant.");
+            }
+
+            return RedirectToAction("Index");
+
         }
     }
 }

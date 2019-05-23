@@ -2,6 +2,7 @@
 using System.Data;
 using System.Linq;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Models.ViewModels.Enrollments;
@@ -59,7 +60,7 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                var dbParticipant= db.Courses.Find(participantId);
+                var dbParticipant= db.Persons.Find(participantId);
                 if (dbParticipant == null)
                     throw new DataException(
                         "The table Course does not contain an entry corresponding to the provided primary key");
@@ -123,5 +124,27 @@ namespace WebApplication1.Services
 
             }
         }
+
+        public static DisplayEnrollmentVm FetchEnrollment(int id)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                var dbEnrollment = db.Entrollments.Find(id);
+                if(dbEnrollment==null)
+                    throw new DataException("No such enrollment exists");
+                return new DisplayEnrollmentVm()
+                {
+                    CourseId = dbEnrollment.Course_Fk,
+                    CourseName = db.Courses.Find(dbEnrollment.Course_Fk)
+                        ?.Name,
+                    EnrollmentId = dbEnrollment.EnrollmentId,
+                    PersonId = dbEnrollment.Person_Fk,
+                    PersonName = db.Persons.Find(dbEnrollment.Person_Fk)
+                        ?.Name
+                };
+            }
+        }   
+
+
     }
 }

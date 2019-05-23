@@ -1,10 +1,10 @@
-﻿@model WebApplication1.Models.ViewModels.Enrollments.CreateEnrollmentVm
-
+﻿@using System.Web.UI.WebControls
+@model WebApplication1.Models.ViewModels.Enrollments.CreateEnrollmentVm
 @{
     ViewBag.Title = $"Create Enrollment For {ViewBag.CourseName}";
 }
 
-<h2>Create Enrollment For @ViewBag.CourseName</h2>
+<h2>Create an enrollment for @ViewBag.CourseName</h2>
 
 
 @using (Html.BeginForm())
@@ -17,17 +17,17 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CourseId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.HiddenFor(model=>model.CourseId, new { @Value = Model.CourseId })
-                <input value="@ViewBag.CourseName" readonly class="form-control"/>
+                @Html.HiddenFor(model => model.CourseId, new { @Value = Model.CourseId })
+                <input value="@ViewBag.CourseName" readonly class="form-control" />
                 @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
             </div>
         </div>
-        @Html.HiddenFor(model=>model.ParticipantList)
+        @Html.HiddenFor(model => model.ParticipantList)
         <div class="form-group">
             @Html.LabelFor(model => model.ParticipantId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.ParticipantId, new SelectList(Model.ParticipantList, "PersonId", "Name"), new { @class = "form-control"})
-                @Html.ValidationMessageFor(model => model.ParticipantId, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.ParticipantId, new SelectList(Model.ParticipantList,  "PersonId", "Name"),new { @class = "form-control dropdown-search" })
+                @Html.ValidationMessageFor(model => model.ParticipantId, "", new {@class = "text-danger"})
             </div>
         </div>
 
@@ -40,9 +40,5 @@
 }
 
 <div>
-    @Html.ActionLink($"Back to {ViewBag.CourseName}'s enrollments", "CourseEnrollments",new { courseId = Model.CourseId })
+    @Html.ActionLink($"Back to {ViewBag.CourseName}'s enrollments", "CourseEnrollments", new { courseId = Model.CourseId })
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

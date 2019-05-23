@@ -2,11 +2,11 @@
 @model IEnumerable<WebApplication1.Models.ViewModels.Enrollments.DisplayEnrollmentVm>
 
 @{
-    ViewBag.Title = $"Enrollments for {ViewBag.CourseName}";
+    ViewBag.Title = $"Enrollments for {ViewBag.Course.Name}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Enrollments for @(ViewBag?.Name)</h2>
+<h2>Enrollments for @(ViewBag.Course.Name)</h2>
 
 
 
@@ -14,7 +14,7 @@
     @Html.ActionLink("Add new enrollment to course", "CreateForCourse", routeValues: new { courseId = ViewBag.Course.CourseId }, htmlAttributes: new { @class = "btn btn-outline-success " })
 </p>
 
-<table class="table">
+<table class="table table-striped table-bordered table-hover custom-table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.PersonName)
@@ -29,7 +29,7 @@
                 @Html.DisplayFor(modelItem => item.PersonName)
             </td>
             <td>
-                @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId })
+                @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId }, htmlAttributes: new { @class = "btn btn-outline-danger btn-sm" })
             </td>
         </tr>
     }

@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels;
@@ -52,7 +53,7 @@ namespace WebApplication1.Services
             {
                 db.Database.ExecuteSqlCommand("TRUNCATE TABLE [Colors]");
                 db.Colors.AddRange(Graph.GraphInstance.Vertices.Select(cl => new Colors()
-                { Course_Fk = cl.Id, Day = (int)cl.Color.day, TimeSlot = (int)cl.Color.timeSlot }).AsEnumerable());
+                { Course_Fk = cl.Id, Day = (int)cl.Color.Day, TimeSlot = (int)cl.Color.TimeSlot }).AsEnumerable());
                 db.SaveChanges();
             }
         }
@@ -98,6 +99,16 @@ namespace WebApplication1.Services
             {
                 var dbEnrollment = new Entrollments() { Course_Fk = enrollment.CourseId, Person_Fk = enrollment.ParticipantId };
                 db.Entrollments.Add(dbEnrollment);
+                db.SaveChanges();
+            }
+        }
+
+        public static void DeleteEnrollment(int id)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                var dbEnrollment = new Entrollments(){EnrollmentId = id};
+                db.Entry(dbEnrollment).State = EntityState.Deleted;
                 db.SaveChanges();
             }
         }

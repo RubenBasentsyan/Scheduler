@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,16 +15,16 @@ namespace WebApplication1.Controllers
         // GET: Enrollment
         public ActionResult CourseEnrollments(int courseId)
         {
-            var enrollments = EntityFetcher.FetchCourseEnrollments(courseId);
+            //TempData["Info"] = new {from = "course", id = courseId};
             ViewBag.Course = EntityFetcher.FetchCourseWithId(courseId);
-            return View(enrollments);
+            return View(EntityFetcher.FetchCourseEnrollments(courseId));
         }
 
         public ActionResult PersonEnrollments(int personId)
         {
-            var enrollments = EntityFetcher.FetchPersonEnrollments(personId);
-            ViewBag.PersonName = EntityFetcher.FetchParticipantWithId(personId)?.Name;
-            return View(enrollments);
+            //TempData["Info"] = new { from = "person", id = personId };
+            ViewBag.Person = EntityFetcher.FetchParticipantWithId(personId);
+            return View(EntityFetcher.FetchPersonEnrollments(personId));
         }
 
         public ActionResult CreateForCourse(int courseId)
@@ -50,10 +51,10 @@ namespace WebApplication1.Controllers
             }
             catch (System.Data.Entity.Validation.DbEntityValidationException)
             {
-                ModelState.AddModelError("PersonId", "The participant no longer exists.");
+                ModelState.AddModelError("PersonId", "Something went wrong, this participant likely no longer exists.");
                 return View(enrollment);
             }
-            return RedirectToAction("CourseEnrollments", new { courseId = enrollment.EnrollmentId });
+            return RedirectToAction("CourseEnrollments", new { courseId = enrollment.CourseId });
         }
 
         public ActionResult CreateForParticipant(int participantId)
@@ -74,19 +75,36 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult CreateForParticipant(CreateEnrollmentVm enrollment)
         {
-
-            return View();
+            try
+            {
+                EntityModifier.CreateEnrollment(enrollment);
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException)
+            {
+                ModelState.AddModelError("CourseId", "Something went wrong, this course likely no longer exists.");
+                return View(enrollment);
+            }
+            return RedirectToAction("PersonEnrollments", new { personId = enrollment.ParticipantId });
         }
 
         public ActionResult Delete( int id )
         {
-            return View();
+            TempData.Keep();
+            try
+            {
+                return View( EntityFetcher.FetchEnrollment(id));
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
-        public ActionResult Delete( DisplayEnrollmentVm enrollment)
+        public ActionResult Delete(DisplayEnrollmentVm enrollment)
         {
-            return View();
+            EntityModifier.DeleteEnrollment(enrollment.EnrollmentId);
+            return RedirectToAction("Index","Home");
         }
 
 

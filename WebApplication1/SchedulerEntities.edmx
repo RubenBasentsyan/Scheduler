@@ -17,7 +17,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
         </EntityType>
         <EntityType Name="Entrollments">
@@ -26,13 +26,13 @@
           </Key>
           <Property Name="Person_Fk" Type="int" Nullable="false" />
           <Property Name="Course_Fk" Type="int" Nullable="false" />
-          <Property Name="EnrollmentId" Type="int" Nullable="false" />
+          <Property Name="EnrollmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="Persons">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
         </EntityType>
         <Association Name="FK_Colors_ToCourses">
@@ -113,7 +113,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Colors" Relationship="Self.FK_Colors_ToCourses" FromRole="Courses" ToRole="Colors" />
           <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Courses" ToRole="Entrollments" />
@@ -124,7 +124,7 @@
           </Key>
           <Property Name="Person_Fk" Type="Int32" Nullable="false" />
           <Property Name="Course_Fk" Type="Int32" Nullable="false" />
-          <Property Name="EnrollmentId" Type="Int32" Nullable="false" />
+          <Property Name="EnrollmentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Courses" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Entrollments" ToRole="Courses" />
           <NavigationProperty Name="Persons" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Entrollments" ToRole="Persons" />
         </EntityType>
@@ -132,7 +132,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Persons" ToRole="Entrollments" />
         </EntityType>

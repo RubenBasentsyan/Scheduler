@@ -97,7 +97,7 @@ namespace WebApplication1.Helpers
                 {
                     valid = true;
                     if (Color.EnoughRoomExists(d, t) && GetAdjacentVertices(crs).All(adjCourse =>
-                            (adjCourse.Color == null || adjCourse.Color.day != d || adjCourse.Color.timeSlot != t)) &&
+                            (adjCourse.Color == null || adjCourse.Color.Day != d || adjCourse.Color.TimeSlot != t)) &&
                         ThreeExamConstraint(crs, d, t))
                         break;
                     valid = false;
@@ -120,7 +120,7 @@ namespace WebApplication1.Helpers
             foreach (var student in course.participantIds)
             {
                 if (((TimeSlot[])Enum.GetValues(typeof(TimeSlot))).Count(t => GraphInstance.Vertices.Any(crs =>
-                       crs.Color != null && crs.Color.day == day && crs.Color.timeSlot == t &&
+                       crs.Color != null && crs.Color.Day == day && crs.Color.TimeSlot == t &&
                        crs.participantIds.Contains(student))) > 1)
                     return false;
             }

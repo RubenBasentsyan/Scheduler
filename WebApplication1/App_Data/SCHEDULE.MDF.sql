@@ -40,15 +40,37 @@ USE [$(DatabaseName)];
 
 
 GO
+PRINT N'Creating [dbo].[Colors]...';
+
+
+GO
+CREATE TABLE [dbo].[Colors] (
+    [Course_Fk] INT NOT NULL,
+    [Day]       INT NULL,
+    [TimeSlot]  INT NULL,
+    CONSTRAINT [PK_Colors] PRIMARY KEY CLUSTERED ([Course_Fk] ASC)
+);
+
+
+GO
 PRINT N'Creating [dbo].[Courses]...';
 
 
 GO
 CREATE TABLE [dbo].[Courses] (
-    [Id]   INT          NOT NULL,
+    [Id]   INT          IDENTITY (1, 1) NOT NULL,
     [Name] VARCHAR (64) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+GO
+PRINT N'Creating [dbo].[Courses].[IX_Courses_Id]...';
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Courses_Id]
+    ON [dbo].[Courses]([Id] ASC);
 
 
 GO
@@ -59,8 +81,8 @@ GO
 CREATE TABLE [dbo].[Entrollments] (
     [Person_Fk]    INT NOT NULL,
     [Course_Fk]    INT NOT NULL,
-    [EnrollmentId] INT NOT NULL,
-    CONSTRAINT [PK_Entrollments] PRIMARY KEY CLUSTERED ([EnrollmentId] ASC)
+    [EnrollmentId] INT IDENTITY (1, 1) NOT NULL,
+    PRIMARY KEY CLUSTERED ([EnrollmentId] ASC)
 );
 
 
@@ -70,10 +92,19 @@ PRINT N'Creating [dbo].[Persons]...';
 
 GO
 CREATE TABLE [dbo].[Persons] (
-    [Id]   INT          NOT NULL,
+    [Id]   INT          IDENTITY (1, 1) NOT NULL,
     [Name] VARCHAR (64) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+GO
+PRINT N'Creating [dbo].[FK_Colors_ToCourses]...';
+
+
+GO
+ALTER TABLE [dbo].[Colors] WITH NOCHECK
+    ADD CONSTRAINT [FK_Colors_ToCourses] FOREIGN KEY ([Course_Fk]) REFERENCES [dbo].[Courses] ([Id]) ON DELETE CASCADE;
 
 
 GO
@@ -82,7 +113,7 @@ PRINT N'Creating [dbo].[FK_Entrollments_ToCourses]...';
 
 GO
 ALTER TABLE [dbo].[Entrollments] WITH NOCHECK
-    ADD CONSTRAINT [FK_Entrollments_ToCourses] FOREIGN KEY ([Course_Fk]) REFERENCES [dbo].[Courses] ([Id]);
+    ADD CONSTRAINT [FK_Entrollments_ToCourses] FOREIGN KEY ([Course_Fk]) REFERENCES [dbo].[Courses] ([Id]) ON DELETE CASCADE;
 
 
 GO
@@ -91,7 +122,7 @@ PRINT N'Creating [dbo].[FK_Entrollments_ToPersons]...';
 
 GO
 ALTER TABLE [dbo].[Entrollments] WITH NOCHECK
-    ADD CONSTRAINT [FK_Entrollments_ToPersons] FOREIGN KEY ([Person_Fk]) REFERENCES [dbo].[Persons] ([Id]);
+    ADD CONSTRAINT [FK_Entrollments_ToPersons] FOREIGN KEY ([Person_Fk]) REFERENCES [dbo].[Persons] ([Id]) ON DELETE CASCADE;
 
 
 GO
@@ -103,6 +134,8 @@ USE [$(DatabaseName)];
 
 
 GO
+ALTER TABLE [dbo].[Colors] WITH CHECK CHECK CONSTRAINT [FK_Colors_ToCourses];
+
 ALTER TABLE [dbo].[Entrollments] WITH CHECK CHECK CONSTRAINT [FK_Entrollments_ToCourses];
 
 ALTER TABLE [dbo].[Entrollments] WITH CHECK CHECK CONSTRAINT [FK_Entrollments_ToPersons];

@@ -2,16 +2,16 @@
 @model IEnumerable<WebApplication1.Models.ViewModels.Enrollments.DisplayEnrollmentVm>
 
 @{
-    ViewBag.Title = ViewBag.Title = $"{Model?.First().PersonName ?? "Null Person"}'s Enrollments";
+    ViewBag.Title = ViewBag.Title = $"{ViewBag.Person?.Name ?? "Null Person"}'s Enrollments";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2> @ViewBag.PersonName's Enrollments  </h2>
+<h2> @(ViewBag.Person?.Name)'s Enrollments  </h2>
 
 <p> 
-    @Html.ActionLink("Enroll In a New Course", "CreateForParticipant",routeValues:new{ participantId = Model?.First().PersonId},htmlAttributes: new{@class = "btn btn-outline-success "})
+    @Html.ActionLink($"Enroll {ViewBag.Person?.Name} In a New Course", "CreateForParticipant",routeValues:new{ participantId = ViewBag.Person.PersonId},htmlAttributes: new{@class = "btn btn-outline-success "})
 </p>
-<table class="table">
+<table class="table table-striped table-bordered table-hover custom-table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.CourseName)
@@ -25,7 +25,7 @@
             @Html.DisplayFor(modelItem => item.CourseName)
         </td>
         <td>
-            @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId })
+            @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId }, htmlAttributes: new { @class = "btn btn-outline-danger btn-sm" })
         </td>
     </tr>
 }
