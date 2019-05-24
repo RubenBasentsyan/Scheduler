@@ -66,11 +66,17 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                var schedule = (from cr in db.Courses
-                                join co in db.Colors on cr.Id equals co.Course_Fk
-                                select new ScheduleViewModel()
-                                { Course = cr.Name, CourseId = cr.Id, TimeSlot = ((TimeSlot)co.TimeSlot).ToString(), Day = ((Day)co.Day).ToString()})
-                    .OrderBy(w => w.Day).ThenBy(w=>w.TimeSlot).ToList();
+                var schedule =
+                    (from co in db.Colors
+                    join cr in db.Courses on co.Course_Fk equals cr.Id
+                    orderby co.Day,co.TimeSlot
+                    select new ScheduleViewModel()
+                    {
+                        CourseId = co.Course_Fk,
+                        Course = cr.Name,
+                        Day = ((Day) co.Day).ToString(),
+                        TimeSlot = ((TimeSlot) co.TimeSlot).ToString(),
+                    }).ToList();
 
                 return schedule;
             }

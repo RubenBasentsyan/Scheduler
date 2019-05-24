@@ -26,19 +26,18 @@
             </th>
         </tr>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Course)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Day)
-                </td>
-                <td style="width:auto">
-                    @Html.DisplayFor(modelItem => item.TimeSlot)
-                </td>
-            </tr>
-        }
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink(item.Course,"CourseEnrollments","Enrollment", new {courseId = item.CourseId} , htmlAttributes: new{@class = "table-link"})
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Day)
+        </td>
+        <td style="width:auto" >
+            @Html.DisplayFor(modelItem => item.TimeSlot)
+        </td>
+    </tr>
+}
 
     </table>

@@ -140,6 +140,7 @@ namespace WebApplication1.Controllers
                 TempData.Keep();
                 try
                 {
+                    TempData["Url"] = (Request?.UrlReferrer?.ToString() ?? "/Home/Index");
                     return View(EntityFetcher.FetchEnrollment(id));
                 }
                 catch (DataException)
@@ -159,7 +160,7 @@ namespace WebApplication1.Controllers
             if (isAdmin == true)
             {
                 EntityModifier.DeleteEnrollment(enrollment.EnrollmentId);
-                return RedirectToAction("Index", "Home");
+                return Redirect(TempData["Url"].ToString());
             }
             return RedirectToAction("Login", "Home");
         }
