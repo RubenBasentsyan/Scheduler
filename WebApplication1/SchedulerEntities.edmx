@@ -34,6 +34,9 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" />
         </EntityType>
         <Association Name="FK_Colors_ToCourses">
           <End Role="Courses" Type="Self.Courses" Multiplicity="1">
@@ -134,6 +137,9 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" />
           <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Persons" ToRole="Entrollments" />
         </EntityType>
         <Association Name="FK_Colors_ToCourses">
@@ -233,6 +239,9 @@
               <MappingFragment StoreEntitySet="Persons">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -61,7 +61,7 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                var dbPerson = new Persons() { Name = participant.Name };
+                var dbPerson = new Persons() { Name = participant.Name, Username = participant.Username, Password = participant.Password, IsAdmin = participant.IsAdmin};
                 db.Persons.Add(dbPerson);
                 db.SaveChanges();
             }

@@ -20,6 +20,33 @@ namespace WebApplication1.Services
             using (var db = new SchedulerEntities())
                 return db.Courses.Select(s => new CourseViewModel() { CourseId = s.Id, Name = s.Name }).ToList();
         }
+
+        public static ParticipantsViewModel FetchLoginUser(string username, string password)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                var dbUser =  db.Persons.Where(usr => usr.Username == username && usr.Password == password).SingleOrDefault();
+                if(dbUser == null)
+                {
+                    throw new DataException("The user was not found");
+                }
+                return new ParticipantsViewModel() { PersonId=dbUser.Id, IsAdmin = dbUser.IsAdmin == true, Password = dbUser.Password , Name=dbUser.Name, Username=dbUser.Username };
+            }
+        }
+
+        public static bool? FetchUserAdminStatus(string username)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                var dbUser = db.Persons.Where(usr => usr.Username == username).SingleOrDefault();
+                if (dbUser == null)
+                {
+                    throw new DataException("The user was not found");
+                }
+                return dbUser.IsAdmin;
+            }
+        }
+
         public static CourseViewModel FetchCourseWithId(int courseId)
         {
             using (var db = new SchedulerEntities())

@@ -7,103 +7,154 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Services;
+using WebApplication1.Helpers;
 
 namespace WebApplication1.Controllers
 {
     public class CourseController : Controller
     {
+        [Authorize]
         // GET: Course
         public ActionResult Index()
         {
-            return View(EntityFetcher.FetchAllCourses());
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
+            {
+                return View(EntityFetcher.FetchAllCourses());
+            }
+            return RedirectToAction("Login", "Home");
         }
 
+        [Authorize]
         public ActionResult Create()
         {
-            return View();
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
+            {
+                return View();
+            }
+            return RedirectToAction("Login", "Home");
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult Create(CourseViewModel course)
         {
-            if (ModelState.IsValid)
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
+            {
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        EntityModifier.CreateCourse(course);
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("Name", "Can't create a course.");
+                        return View(course);
+                    }
+                    return RedirectToAction("Index");
+                }
+                return View(course);
+            }
+            return RedirectToAction("Login", "Home");
+        }
+
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
             {
                 try
                 {
-                    EntityModifier.CreateCourse(course);
-                }
-                catch
-                {
-                    ModelState.AddModelError("Name", "Can't create a course.");
+                    CourseViewModel course;
+                    course = EntityFetcher.FetchCourseWithId(id);
                     return View(course);
                 }
-                return RedirectToAction("Index");
+                catch (DataException)
+                {
+                    return RedirectToAction("Index");
+                }
             }
-            return View(course);
+            return RedirectToAction("Login", "Home");
         }
 
-        public ActionResult Edit(int id)
-        {
-            try
-            {
-                CourseViewModel course;
-                course = EntityFetcher.FetchCourseWithId(id);
-                return View(course);
-            }
-            catch(DataException)
-            {
-                return RedirectToAction("Index");
-            }
-        }
+        [Authorize]
         [HttpPost]
         public ActionResult Edit(CourseViewModel course)
         {
-            if (ModelState.IsValid)
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
+            {
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        EntityModifier.EditCourse(course);
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("Name", "Can't modify the course.");
+                    }
+                    return RedirectToAction("Index");
+                }
+                return View(course);
+            }
+            return RedirectToAction("Login", "Home");
+        }
+
+        [Authorize]
+        public ActionResult Delete(int id)
+        {
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
             {
                 try
                 {
-                    EntityModifier.EditCourse(course);
+                    CourseViewModel course;
+                    course = EntityFetcher.FetchCourseWithId(id);
+                    return View(course);
                 }
-                catch
+                catch (DataException)
                 {
-                    ModelState.AddModelError("Name", "Can't modify the course.");
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
             }
-            return View(course);
+            return RedirectToAction("Login", "Home");
         }
 
-        public ActionResult Delete(int id)
-        {
-            try
-            {
-                CourseViewModel course;
-                course = EntityFetcher.FetchCourseWithId(id);
-                return View(course);
-            }
-            catch(DataException)
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
+        [Authorize]
         [HttpPost]
         public ActionResult Delete( CourseViewModel course )
         {
-            if (ModelState["CourseId"]!=null)
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            ViewBag.isAdmin = isAdmin;
+            if (isAdmin == true)
             {
-                try
+                if (ModelState["CourseId"] != null)
                 {
-                    EntityModifier.DeleteCourse(course);
-                }
-                catch
-                {
-                    ModelState.AddModelError("Name", "Can't modify the course.");
-                }
+                    try
+                    {
+                        EntityModifier.DeleteCourse(course);
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("Name", "Can't modify the course.");
+                    }
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+                return View(course);
             }
-            return View(course);
+            return RedirectToAction("Login", "Home");
         }
     }
 }

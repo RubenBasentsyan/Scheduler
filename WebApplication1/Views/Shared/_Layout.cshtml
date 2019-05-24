@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using WebApplication1.Helpers
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,14 +14,19 @@
     <div class="container">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         </button>
-        <a class="navbar-brand" href="/">Final Exam Scheduler</a>
+        <a class="navbar-brand" style="color:whitesmoke">Final Exam Scheduler</a>
         <div class="navbar-collapse collapse" id="navbarSupportedContent">
             <ul class="nav navbar-nav mr-auto">
-                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="/Home/Index" class="nav-link">Schedule</a></li>
+                @if (ViewBag.isAdmin == true)
+                {
                 <li class="nav-item"><a href="/Course/Index" class="nav-link">Courses</a></li>
                 <li class="nav-item"><a href="/Participant/Index" class="nav-link">Participants</a></li>
+                }
+                <li class="nav-item" style="float:right"><a href="/Home/Logout" class="nav-link">Logout</a></li>
             </ul>
         </div>
+        <img src="https://armacad.info/images/organizations/157/logo_4b3e265103e6d984.png"  height="50" width="50" style="float:right"/>
     </div>
 </nav>
     <div class="container body-content main-body" >
