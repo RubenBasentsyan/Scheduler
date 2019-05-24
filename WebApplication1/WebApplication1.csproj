@@ -338,6 +338,7 @@
     <Content Include="Views\Enrollment\PersonEnrollments.cshtml" />
     <Content Include="Views\Enrollment\CreateForCourse.cshtml" />
     <Content Include="Views\Enrollment\CreateForParticipant.cshtml" />
+    <Content Include="Views\Enrollment\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

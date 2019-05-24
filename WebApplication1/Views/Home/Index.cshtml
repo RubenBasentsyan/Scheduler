@@ -26,7 +26,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Course)
+            @Html.ActionLink(item.Course,"CourseEnrollments","Enrollment", new {courseId = item.CourseId} , htmlAttributes: new{@class = "table-link"})
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Day)

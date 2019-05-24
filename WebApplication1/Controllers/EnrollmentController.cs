@@ -89,9 +89,10 @@ namespace WebApplication1.Controllers
 
         public ActionResult Delete( int id )
         {
-            TempData.Keep();
+            
             try
             {
+                TempData["Url"] = (Request?.UrlReferrer?.ToString() ?? "/Home/Index");
                 return View( EntityFetcher.FetchEnrollment(id));
             }
             catch (DataException)
@@ -104,7 +105,7 @@ namespace WebApplication1.Controllers
         public ActionResult Delete(DisplayEnrollmentVm enrollment)
         {
             EntityModifier.DeleteEnrollment(enrollment.EnrollmentId);
-            return RedirectToAction("Index","Home");
+            return Redirect(TempData["Url"].ToString());
         }
 
 

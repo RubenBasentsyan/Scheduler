@@ -3,14 +3,29 @@
     padding-bottom: 20px;
 }
 .custom-table {
+    border-radius: 7px;
     text-align: center;
     margin: 0 auto;
     width: 75%;
+    border: 2px inset rgb(228, 221, 221);
 }
 .custom-table th:last-child, td:last-child {
     width: 1%;
     white-space: nowrap;
 }
+.custom-table th td {
+    border: 1px inset rgb(237, 237, 237);
+}
+
+.table-link
+{
+    color: rgb(65, 65, 65);
+}
+.table-link:hover 
+{
+    color:rgb(14, 14, 14)
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
