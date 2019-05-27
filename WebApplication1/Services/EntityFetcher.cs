@@ -86,7 +86,7 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                return db.Persons.Select(s => new ParticipantsViewModel() { PersonId = s.Id, Name = s.Name }).ToList();
+                return db.Persons.Where(w=>w.IsAdmin!=true).Select(s => new ParticipantsViewModel() { PersonId = s.Id, Name = s.Name }).ToList();
             }
         }
         public static ParticipantsViewModel FetchParticipantWithId(int participantId)

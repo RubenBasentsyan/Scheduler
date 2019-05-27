@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using WebApplication1.Helpers;
 using WebApplication1.Services;
 using WebApplication1.Models.ViewModels;
 using System.Web.Security;
-using System.Web;
 
 namespace WebApplication1.Controllers
 {
@@ -15,6 +13,7 @@ namespace WebApplication1.Controllers
         {
             ViewBag.isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             var schedule = EntityFetcher.FetchSchedule();
+            ViewBag.Message = TempData["message"];
             return View(schedule);
         }
 
@@ -49,7 +48,6 @@ namespace WebApplication1.Controllers
                     EntityFetcher.FetchLoginUser(person.Username, person.Password);
                     ViewBag.Message = "Hello" + person?.Username;
                     FormsAuthentication.SetAuthCookie(person.Username, false);
-                    IsAdmin.Admin = EntityFetcher.FetchUserAdminStatus(person.Username) == true;
                     return RedirectToAction("Index", "Home");
                 }
                 catch
@@ -64,7 +62,6 @@ namespace WebApplication1.Controllers
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
-            IsAdmin.Admin=false;
             return RedirectToAction("Login");
         }
 

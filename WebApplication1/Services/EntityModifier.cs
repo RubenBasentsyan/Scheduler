@@ -1,6 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Web;
 using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Models.ViewModels.Enrollments;
@@ -111,6 +113,11 @@ namespace WebApplication1.Services
                 db.Entry(dbEnrollment).State = EntityState.Deleted;
                 db.SaveChanges();
             }
+        }
+
+        public static void PopulateTablesFromCSV(System.IO.Stream csvStream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -183,6 +183,7 @@
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\EnrollmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\ParticipantController.cs" />
     <Compile Include="Courses.cs">
       <DependentUpon>SchedulerEntities.tt</DependentUpon>
@@ -199,8 +200,8 @@
     <Compile Include="Helpers\Graph.cs" />
     <Compile Include="Classes\Course.cs" />
     <Compile Include="Classes\Person.cs" />
-    <Compile Include="Helpers\IsAdmin.cs" />
     <Compile Include="Helpers\Methods.cs" />
+    <Compile Include="Models\ViewModels\EnrollmentImportViewModel.cs" />
     <Compile Include="Models\ViewModels\Enrollments\CreateEnrollmentVm.cs" />
     <Compile Include="Models\ViewModels\CourseViewModel.cs" />
     <Compile Include="Models\ViewModels\Enrollments\DisplayEnrollmentVm.cs" />
@@ -342,6 +343,7 @@
     <Content Include="Views\Enrollment\CreateForParticipant.cshtml" />
     <Content Include="Views\Enrollment\Delete.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Import\ImportTable.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
