@@ -1,7 +1,7 @@
 ﻿using System;
-using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
+using QuickGraph;
 using WebApplication1.Classes;
 
 namespace WebApplication1.Helpers
@@ -9,53 +9,54 @@ namespace WebApplication1.Helpers
     public static class Graph
     {
         public static UndirectedGraph<Course, Edge> GraphInstance { get; private set; }
+
         /// <summary>
-        /// Populates the graph.
+        ///     Populates the graph.
         /// </summary>
         public static void PopulateGraph()
         {
             Color.ResetLimits();
-            using (SchedulerEntities db = new SchedulerEntities())
+            using (var db = new SchedulerEntities())
             {
                 GraphInstance = new UndirectedGraph<Course, Edge>(false);
-                Course temp;
-                foreach (Courses course in db.Courses)
+                foreach (var course in db.Courses)
                 {
-                    temp = (Course)course;
-                    temp.participantIds = new HashSet<int>(course.Entrollments.Select(e => e.Person_Fk));
+                    var temp = (Course) course;
+                    temp.ParticipantIds = new HashSet<int>(course.Entrollments.Select(e => e.Person_Fk));
                     GraphInstance.AddVertex(temp);
                 }
+
                 PopulateEdges();
             }
         }
+
         /// <summary>
-        /// Populates the edges.
+        ///     Populates the edges.
         /// </summary>
         private static void PopulateEdges()
         {
-            foreach (Course first in GraphInstance.Vertices)
+            foreach (var first in GraphInstance.Vertices)
+            foreach (var second in GraphInstance.Vertices)
             {
-                foreach (Course second in GraphInstance.Vertices)
+                if (GraphInstance.ContainsEdge(first, second))
+                    continue;
+                if (!first.Equals(second) && first.ParticipantIds.Overlaps(second.ParticipantIds))
                 {
-                    if (GraphInstance.ContainsEdge(first, second))
-                        continue;
-                    if (!first.Equals(second) && first.participantIds.Overlaps(second.participantIds))
-                    {
-                        HashSet<int> intersection = new HashSet<int>(first.participantIds);
-                        intersection.IntersectWith(second.participantIds);
-                        GraphInstance.AddEdge(new Edge(first, second, intersection.Count));
-                    }
+                    var intersection = new HashSet<int>(first.ParticipantIds);
+                    intersection.IntersectWith(second.ParticipantIds);
+                    GraphInstance.AddEdge(new Edge(first, second, intersection.Count));
                 }
             }
         }
+
         /// <summary>
-        /// Colors the graph.
+        ///     Colors the graph.
         /// </summary>
         public static void ColorGraph()
         {
             foreach (var course in GraphInstance.Vertices.OrderByDescending(crs => GraphInstance.AdjacentDegree(crs))
                 .ThenByDescending(crs => GraphInstance.AdjacentEdges(crs)
-                    .Sum(e => e.weight)))
+                    .Sum(e => e.Weight)))
             {
                 if (course.Color != null)
                     continue;
@@ -64,8 +65,9 @@ namespace WebApplication1.Helpers
                     ColorAppropriately(ret);
             }
         }
+
         /// <summary>
-        /// Gets the courses that have at least one common student with crs
+        ///     Gets the courses that have at least one common student with crs
         /// </summary>
         /// <param name="crs">The course</param>
         /// <returns>The li</returns>
@@ -79,51 +81,64 @@ namespace WebApplication1.Helpers
                         : edge.Source)
                     .OrderByDescending(course => GraphInstance.AdjacentDegree(course))
                     .ThenByDescending(course => GraphInstance.AdjacentEdges(course)
-                        .Sum(e => e.weight))
+                        .Sum(e => e.Weight))
                     .ToList();
             throw new ArgumentNullException();
         }
+
         /// <summary>
-        /// Colors a course with the best possible color
+        ///     Colors a course with the best possible color
         /// </summary>
         /// <param name="crs">The CRS.</param>
         private static void ColorAppropriately(Course crs)
         {
-            bool valid = true;
-            TimeSlot t;
-            foreach (var d in (Day[])Enum.GetValues(typeof(Day)))
+            var valid = true;
+            int timeSlot;
+            for (var d = 0; d < Color.MaxDays; d++)
             {
-                for (t = 0; (int)t < Enum.GetNames(typeof(TimeSlot)).Length; t++)
+                for (timeSlot = 0; timeSlot < Color.MaxTimeSlots; timeSlot++)
                 {
                     valid = true;
-                    if (Color.EnoughRoomExists(d, t) && GetAdjacentVertices(crs).All(adjCourse =>
-                            (adjCourse.Color == null || adjCourse.Color.Day != d || adjCourse.Color.TimeSlot != t)) &&
-                        ThreeExamConstraint(crs, d, t))
+                    if (Color.EnoughRoomExists(d, timeSlot) && GetAdjacentVertices(crs).All(adjCourse =>
+                            adjCourse.Color == null || adjCourse.Color.Day != d ||
+                            adjCourse.Color.TimeSlot != timeSlot) &&
+                        ThreeExamConstraint(crs, d, timeSlot))
                         break;
                     valid = false;
                 }
+
                 if (!valid) continue;
-                Color.SetCourseColor(d, t, crs);
+                Color.SetCourseColor(d, timeSlot, crs);
                 return;
             }
-            throw new Exception("Impossible to make a schedule");
+
+            throw new ImpossibleScheduleException();
         }
+
         /// <summary>
-        /// Checks whether the 3 exam constraint is satisfied.
+        ///     Checks whether the 3 exam constraint is satisfied.
         /// </summary>
         /// <param name="course">The course.</param>
         /// <param name="day">The day.</param>
         /// <param name="timeSlot">The time slot.</param>
         /// <returns>True if the 3 exam constraint is satisfied, false o.w.</returns>
-        private static bool ThreeExamConstraint(Course course, Day day, TimeSlot timeSlot)
+        private static bool ThreeExamConstraint(Course course, int day, int timeSlot)
         {
-            foreach (var student in course.participantIds)
+            foreach (var student in course.ParticipantIds)
             {
-                if (((TimeSlot[])Enum.GetValues(typeof(TimeSlot))).Count(t => GraphInstance.Vertices.Any(crs =>
-                       crs.Color != null && crs.Color.Day == day && crs.Color.TimeSlot == t &&
-                       crs.participantIds.Contains(student))) > 1)
-                    return false;
+                var count = 0;
+                for (var i = 0; i < Color.MaxTimeSlots; i++)
+                {
+                    if (count > 1)
+                        return false;
+                    count += GraphInstance.Vertices.Any(crs =>
+                        crs.Color != null && crs.Color.Day == day && crs.Color.TimeSlot == i &&
+                        crs.ParticipantIds.Contains(student))
+                        ? 1
+                        : 0;
+                }
             }
+
             return true;
         }
     }

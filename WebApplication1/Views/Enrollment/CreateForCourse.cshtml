@@ -1,5 +1,4 @@
-﻿@using System.Web.UI.WebControls
-@model WebApplication1.Models.ViewModels.Enrollments.CreateEnrollmentVm
+﻿@model WebApplication1.Models.ViewModels.Enrollments.CreateEnrollmentVm
 @{
     ViewBag.Title = $"Create Enrollment For {ViewBag.CourseName}";
 }
@@ -12,33 +11,33 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
         <div class="form-group">
-            @Html.LabelFor(model => model.CourseId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CourseId, new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.HiddenFor(model => model.CourseId, new { @Value = Model.CourseId })
-                <input value="@ViewBag.CourseName" readonly class="form-control" />
-                @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.CourseId, new {Value = Model.CourseId})
+                <input value="@ViewBag.CourseName" readonly class="form-control"/>
+                @Html.ValidationMessageFor(model => model.CourseId, "", new {@class = "text-danger"})
             </div>
         </div>
         @Html.HiddenFor(model => model.ParticipantList)
         <div class="form-group">
-            @Html.LabelFor(model => model.ParticipantId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ParticipantId, new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.ParticipantId, new SelectList(Model.ParticipantList,  "PersonId", "Name"),new { @class = "form-control dropdown-search" })
+                @Html.DropDownListFor(model => model.ParticipantId, new SelectList(Model.ParticipantList, "PersonId", "Name"), new {@class = "form-control dropdown-search"})
                 @Html.ValidationMessageFor(model => model.ParticipantId, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default"/>
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink($"Back to {ViewBag.CourseName}'s enrollments", "CourseEnrollments", new { courseId = Model.CourseId })
+    @Html.ActionLink($"Back to {ViewBag.CourseName}'s enrollments", "CourseEnrollments", new {courseId = Model.CourseId})
 </div>

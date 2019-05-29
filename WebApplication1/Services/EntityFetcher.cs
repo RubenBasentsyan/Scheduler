@@ -1,36 +1,114 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
 using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Models.ViewModels.Enrollments;
 
 namespace WebApplication1.Services
-{ 
+{
     /// <summary>
-    /// Encapsulates Data Access Methods 
+    ///     Encapsulates Data Access Methods
     /// </summary>
     public static class EntityFetcher
     {
+        private static readonly int PageSize = 13;
+
         // Course Fetchers 
-        public static IEnumerable<CourseViewModel> FetchAllCourses()
+        public static IEnumerable<CourseViewModel> FetchAllCourses
+        {
+            get
+            {
+                using (var db = new SchedulerEntities())
+                {
+                    return db.Courses.Select(s => new CourseViewModel {CourseId = s.Id, Name = s.Name}).ToList();
+                }
+            }
+        }
+
+        public static int CoursesPageCount
+        {
+            get
+            {
+                using (var db = new SchedulerEntities())
+                {
+                    var entryCount = db.Courses.Count();
+                    return entryCount % PageSize == 0 ? entryCount / PageSize : entryCount / PageSize + 1;
+                }
+            }
+        }
+
+        public static int SchedulePagesCount
+        {
+            get
+            {
+                using (var db = new SchedulerEntities())
+                {
+                    var entryCount = db.Colors.Count();
+                    return entryCount % PageSize == 0 ? entryCount / PageSize : entryCount / PageSize + 1;
+                }
+            }
+        }
+
+        // Participant Fetcher 
+        public static IEnumerable<ParticipantsViewModel> FetchAllParticipants
+        {
+            get
+            {
+                using (var db = new SchedulerEntities())
+                {
+                    return db.Persons.Where(w => w.IsAdmin != true)
+                        .Select(s => new ParticipantsViewModel {PersonId = s.Id, Name = s.Name}).ToList();
+                }
+            }
+        }
+
+        public static int ParticipantsPageCount
+        {
+            get
+            {
+                using (var db = new SchedulerEntities())
+                {
+                    var entryCount = db.Persons.Count();
+                    return entryCount % PageSize == 0 ? entryCount / PageSize : entryCount / PageSize + 1;
+                }
+            }
+        }
+
+        public static ParametersViewModel FetchSchedulingParameters => new ParametersViewModel
+        {
+            ConcurrencyLimit = Color.ConcurrencyLimit, Days = Color.MaxDays,
+            TimeSlots = Color.MaxTimeSlots
+        };
+
+        public static IEnumerable<CourseViewModel> FetchCourses(int page)
         {
             using (var db = new SchedulerEntities())
-                return db.Courses.Select(s => new CourseViewModel() { CourseId = s.Id, Name = s.Name }).ToList();
+            {
+                return db.Courses.Select(s => new CourseViewModel
+                    {
+                        CourseId = s.Id,
+                        Name = s.Name
+                    })
+                    .OrderBy(s => s.CourseId)
+                    .Skip((page - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
+            }
         }
 
         public static ParticipantsViewModel FetchLoginUser(string username, string password)
         {
             using (var db = new SchedulerEntities())
             {
-                var dbUser =  db.Persons.Where(usr => usr.Username == username && usr.Password == password).SingleOrDefault();
-                if(dbUser == null)
+                var dbUser = db.Persons.SingleOrDefault(usr => usr.Username == username && usr.Password == password);
+                if (dbUser == null) throw new DataException("The user was not found");
+
+                return new ParticipantsViewModel
                 {
-                    throw new DataException("The user was not found");
-                }
-                return new ParticipantsViewModel() { PersonId=dbUser.Id, IsAdmin = dbUser.IsAdmin == true, Password = dbUser.Password , Name=dbUser.Name, Username=dbUser.Username };
+                    PersonId = dbUser.Id, IsAdmin = dbUser.IsAdmin == true, Password = dbUser.Password,
+                    Name = dbUser.Name, Username = dbUser.Username
+                };
             }
         }
 
@@ -38,11 +116,9 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                var dbUser = db.Persons.Where(usr => usr.Username == username).SingleOrDefault();
-                if (dbUser == null)
-                {
-                    throw new DataException("The user was not found");
-                }
+                var dbUser = db.Persons.SingleOrDefault(usr => usr.Username == username);
+                if (dbUser == null) throw new DataException("The user was not found");
+
                 return dbUser.IsAdmin;
             }
         }
@@ -55,11 +131,12 @@ namespace WebApplication1.Services
                 if (dbCourse == null)
                     throw new DataException(
                         "The table Course does not contain an entry corresponding to the provided primary key");
-                return new CourseViewModel(){CourseId = dbCourse.Id,Name = dbCourse.Name} ;
+                return new CourseViewModel {CourseId = dbCourse.Id, Name = dbCourse.Name};
             }
         }
+
         /// <summary>
-        /// Fetches the schedule.
+        ///     Fetches the schedule.
         /// </summary>
         /// <returns>The schedule, ordered by Day and TimeSlot</returns>
         public static IEnumerable<ScheduleViewModel> FetchSchedule()
@@ -68,48 +145,79 @@ namespace WebApplication1.Services
             {
                 var schedule =
                     (from co in db.Colors
-                    join cr in db.Courses on co.Course_Fk equals cr.Id
-                    orderby co.Day,co.TimeSlot
-                    select new ScheduleViewModel()
-                    {
-                        CourseId = co.Course_Fk,
-                        Course = cr.Name,
-                        Day = ((Day) co.Day).ToString(),
-                        TimeSlot = ((TimeSlot) co.TimeSlot).ToString(),
-                    }).ToList();
+                        join cr in db.Courses on co.Course_Fk equals cr.Id
+                        orderby co.Day, co.TimeSlot
+                        select new ScheduleViewModel
+                        {
+                            CourseId = co.Course_Fk,
+                            Course = cr.Name,
+                            Day = (co.Day + 1).ToString(),
+                            TimeSlot = (co.TimeSlot + 1).ToString()
+                        }).ToList();
 
                 return schedule;
             }
         }
-        // Participant Fetcher 
-        public static IEnumerable<ParticipantsViewModel> FetchAllParticipants()
+
+        public static IEnumerable<ScheduleViewModel> FetchSchedule(int page)
         {
             using (var db = new SchedulerEntities())
             {
-                return db.Persons.Where(w=>w.IsAdmin!=true).Select(s => new ParticipantsViewModel() { PersonId = s.Id, Name = s.Name }).ToList();
+                var schedule =
+                    (from co in db.Colors
+                        join cr in db.Courses on co.Course_Fk equals cr.Id
+                        orderby co.Day, co.TimeSlot
+                        select new ScheduleViewModel
+                        {
+                            CourseId = co.Course_Fk,
+                            Course = cr.Name,
+                            Day = (co.Day + 1).ToString(),
+                            TimeSlot = (co.TimeSlot + 1).ToString()
+                        }).Skip((page - 1) * PageSize).Take(PageSize).ToList();
+
+                return schedule;
             }
         }
+
+        public static IEnumerable<ParticipantsViewModel> FetchParticipants(int page)
+        {
+            using (var db = new SchedulerEntities())
+            {
+                return db.Persons.Where(w => w.IsAdmin != true)
+                    .Select(s => new ParticipantsViewModel
+                    {
+                        PersonId = s.Id,
+                        Name = s.Name
+                    })
+                    .OrderBy(s => s.PersonId)
+                    .Skip((page - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
+            }
+        }
+
         public static ParticipantsViewModel FetchParticipantWithId(int participantId)
         {
             using (var db = new SchedulerEntities())
             {
-                var dbParticipant= db.Persons.Find(participantId);
+                var dbParticipant = db.Persons.Find(participantId);
                 if (dbParticipant == null)
                     throw new DataException(
                         "The table Course does not contain an entry corresponding to the provided primary key");
-                return new ParticipantsViewModel() { PersonId = dbParticipant.Id, Name = dbParticipant.Name };
+                return new ParticipantsViewModel {PersonId = dbParticipant.Id, Name = dbParticipant.Name};
             }
         }
+
         // Enrollments Fetcher
-        public static IEnumerable<DisplayEnrollmentVm> FetchCourseEnrollments(int CourseId)
+        public static IEnumerable<DisplayEnrollmentVm> FetchCourseEnrollments(int courseId)
         {
             using (var db = new SchedulerEntities())
             {
-                var courseName = db.Courses.Find(CourseId)?.Name;
+                var courseName = db.Courses.Find(courseId)?.Name;
                 return (from e in db.Entrollments
-                    where e.Course_Fk == CourseId
+                    where e.Course_Fk == courseId
                     join per in db.Persons on e.Person_Fk equals per.Id
-                    select new DisplayEnrollmentVm()
+                    select new DisplayEnrollmentVm
                     {
                         EnrollmentId = e.EnrollmentId,
                         CourseId = e.Course_Fk,
@@ -119,15 +227,16 @@ namespace WebApplication1.Services
                     }).ToList();
             }
         }
-        public static IEnumerable<DisplayEnrollmentVm> FetchPersonEnrollments(int PersonId)
+
+        public static IEnumerable<DisplayEnrollmentVm> FetchPersonEnrollments(int personId)
         {
             using (var db = new SchedulerEntities())
             {
-                var personName = db.Persons.Find(PersonId)?.Name;
+                var personName = db.Persons.Find(personId)?.Name;
                 return (from e in db.Entrollments
-                    where e.Person_Fk == PersonId
+                    where e.Person_Fk == personId
                     join crs in db.Courses on e.Course_Fk equals crs.Id
-                    select new DisplayEnrollmentVm()
+                    select new DisplayEnrollmentVm
                     {
                         EnrollmentId = e.EnrollmentId,
                         PersonId = e.Person_Fk,
@@ -138,23 +247,30 @@ namespace WebApplication1.Services
             }
         }
 
-        public static IEnumerable<CourseViewModel> FetchCoursesNotEnrolled (int PersonId)
+        public static IEnumerable<CourseViewModel> FetchCoursesNotEnrolled(int personId)
         {
             using (var db = new SchedulerEntities())
             {
-                var enrolledCourseIds = new HashSet<int>(db.Persons.Find(PersonId).Entrollments.Select(w => w.Course_Fk));
-                return db.Courses.Where(c => !enrolledCourseIds.Contains(c.Id)).Select(c => new CourseViewModel() { CourseId = c.Id, Name = c.Name }).ToList();
-
+                var enrolledCourseIds = new HashSet<int>(db.Persons.Find(personId)
+                    .Entrollments.Select(w => w.Course_Fk));
+                return db.Courses.Where(c => !enrolledCourseIds.Contains(c.Id))
+                    .Select(c => new CourseViewModel
+                    {
+                        CourseId = c.Id,
+                        Name = c.Name
+                    })
+                    .ToList();
             }
         }
 
-        public static IEnumerable<ParticipantsViewModel> FetchParticipantsNotEnrolled(int CourseId)
+        public static IEnumerable<ParticipantsViewModel> FetchParticipantsNotEnrolled(int courseId)
         {
             using (var db = new SchedulerEntities())
             {
-                var enrolledParticipantIds = new HashSet<int>(db.Courses.Find(CourseId).Entrollments.Select(w => w.Person_Fk));
-                return db.Persons.Where(c => !enrolledParticipantIds.Contains(c.Id)).Select(c => new ParticipantsViewModel() { PersonId = c.Id, Name = c.Name }).ToList();
-
+                var enrolledParticipantIds =
+                    new HashSet<int>(db.Courses.Find(courseId).Entrollments.Select(w => w.Person_Fk));
+                return db.Persons.Where(c => !enrolledParticipantIds.Contains(c.Id))
+                    .Select(c => new ParticipantsViewModel {PersonId = c.Id, Name = c.Name}).ToList();
             }
         }
 
@@ -163,9 +279,9 @@ namespace WebApplication1.Services
             using (var db = new SchedulerEntities())
             {
                 var dbEnrollment = db.Entrollments.Find(id);
-                if(dbEnrollment==null)
+                if (dbEnrollment == null)
                     throw new DataException("No such enrollment exists");
-                return new DisplayEnrollmentVm()
+                return new DisplayEnrollmentVm
                 {
                     CourseId = dbEnrollment.Course_Fk,
                     CourseName = db.Courses.Find(dbEnrollment.Course_Fk)
@@ -176,8 +292,6 @@ namespace WebApplication1.Services
                         ?.Name
                 };
             }
-        }   
-
-
+        }
     }
 }

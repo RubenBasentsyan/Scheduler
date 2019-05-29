@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ScheduleModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ScheduleModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012"
+              Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator"
+              xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation"
+              xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Colors">
           <Key>
             <PropertyRef Name="Course_Fk" />
@@ -34,8 +38,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="64" Nullable="false" />
-          <Property Name="Username" Type="varchar" MaxLength="64" Nullable="false" />
-          <Property Name="Password" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="64" />
+          <Property Name="Password" Type="varchar" MaxLength="64" />
           <Property Name="IsAdmin" Type="bit" />
         </EntityType>
         <Association Name="FK_Colors_ToCourses">
@@ -102,7 +106,10 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="ScheduleModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="ScheduleModel" Alias="Self" annotation:UseStrongSpatialTypes="false"
+              xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+              xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation"
+              xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Colors">
           <Key>
             <PropertyRef Name="Course_Fk" />
@@ -119,7 +126,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Colors" Relationship="Self.FK_Colors_ToCourses" FromRole="Courses" ToRole="Colors" />
-          <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Courses" ToRole="Entrollments" />
+          <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Courses"
+                              ToRole="Entrollments" />
         </EntityType>
         <EntityType Name="Entrollments">
           <Key>
@@ -128,8 +136,10 @@
           <Property Name="Person_Fk" Type="Int32" Nullable="false" />
           <Property Name="Course_Fk" Type="Int32" Nullable="false" />
           <Property Name="EnrollmentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Courses" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Entrollments" ToRole="Courses" />
-          <NavigationProperty Name="Persons" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Entrollments" ToRole="Persons" />
+          <NavigationProperty Name="Courses" Relationship="Self.FK_Entrollments_ToCourses" FromRole="Entrollments"
+                              ToRole="Courses" />
+          <NavigationProperty Name="Persons" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Entrollments"
+                              ToRole="Persons" />
         </EntityType>
         <EntityType Name="Persons">
           <Key>
@@ -137,10 +147,11 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Username" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
           <Property Name="IsAdmin" Type="Boolean" />
-          <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Persons" ToRole="Entrollments" />
+          <NavigationProperty Name="Entrollments" Relationship="Self.FK_Entrollments_ToPersons" FromRole="Persons"
+                              ToRole="Entrollments" />
         </EntityType>
         <Association Name="FK_Colors_ToCourses">
           <End Role="Courses" Type="Self.Courses" Multiplicity="1">
@@ -207,7 +218,8 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ScheduleModelStoreContainer" CdmEntityContainer="SchedulerEntities">
+        <EntityContainerMapping StorageEntityContainer="ScheduleModelStoreContainer"
+                                CdmEntityContainer="SchedulerEntities">
           <EntitySetMapping Name="Colors">
             <EntityTypeMapping TypeName="ScheduleModel.Colors">
               <MappingFragment StoreEntitySet="Colors">

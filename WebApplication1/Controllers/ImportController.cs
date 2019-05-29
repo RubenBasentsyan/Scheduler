@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Helpers;
-using WebApplication1.Models.ViewModels;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
@@ -16,36 +12,42 @@ namespace WebApplication1.Controllers
         {
             var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
-            if (isAdmin != true)
-            {
-                return RedirectToAction("Login", "Home");
-            }
+            if (isAdmin != true) return RedirectToAction("Login", "Home");
             return View();
         }
-        
-        [Authorize,HttpPost]
-        public ActionResult ImportTable(EnrollmentImportViewModel enrollments)
+
+        /// <summary>
+        ///     Imports a .csv file in the AUA registrar format to populate the tables in the .
+        /// </summary>
+        /// <param name="enrollments">The enrollments in.csv format.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult ImportTable(HttpPostedFileBase enrollments)
         {
             var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
-            if (isAdmin != true)
+            if (isAdmin != true) return RedirectToAction("Login", "Home");
+            if (enrollments == null || enrollments.ContentLength == 0 ||
+                enrollments.ContentType != "application/vnd.ms-excel")
             {
-                return RedirectToAction("Login", "Home");
+                ModelState.AddModelError("", "Bad upload, upload a non-empty file with .csv extension");
+                return View();
             }
-            if(!ModelState.IsValid)
-            {
-                return View(enrollments);
-            }
+
             try
             {
-                EntityModifier.PopulateTablesFromCSV(enrollments.EnrollmentsCSV.InputStream);
+                EntityModifier.PopulateTablesFromCsv(enrollments.InputStream);
             }
             catch
             {
-                ModelState.AddModelError("EnrollmentsCSV" ,"Bad file");
-                return View(enrollments);
+                ModelState.AddModelError("", "Failed to read from file");
+                return View();
             }
-            TempData["message"] = "Successfuly imported data from the csv file, press Reschedule to populate the table with the new data";
+
+            TempData["messageState"] = 0; //0-success 1-warning 2-danger
+            TempData["message"] =
+                "Successfully imported data from the csv file, press Reschedule to populate the table with the new data";
             return RedirectToAction("Index", "Home");
         }
     }

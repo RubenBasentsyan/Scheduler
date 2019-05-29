@@ -11,7 +11,7 @@
 <div>
 
     <h4>Course</h4>
-    <hr />
+    <hr/>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -26,10 +26,10 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.CourseId, htmlAttributes: new { value = Model.CourseId })
+        @Html.HiddenFor(model => model.CourseId, new {value = Model.CourseId})
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-light" /> |
-            @Html.ActionLink("Back to Courses","Index")
+            <input type="submit" value="Delete" class="btn btn-light"/> |
+            @Html.ActionLink("Back to Courses", "Index")
         </div>
     }
 </div>

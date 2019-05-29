@@ -1,32 +1,78 @@
 ﻿body {
-    padding-top: 50px;
     padding-bottom: 20px;
-}
-.custom-table {
-    border-radius: 7px;
-    text-align: center;
-    margin: 0 auto;
-    width: 75%;
-    border: 2px inset rgb(228, 221, 221);
-}
-.custom-table th:last-child, td:last-child {
-    width: 1%;
-    white-space: nowrap;
-}
-.custom-table th td {
-    border: 1px inset rgb(237, 237, 237);
+    padding-top: 50px;
 }
 
-.table-link
-{
-    color: rgb(65, 65, 65);
+.pagination {
+    justify-content: center;
+    margin-top: 10px;
 }
-.table-link:hover 
-{
-    color:rgb(14, 14, 14)
+
+.pagination a {
+    border: 1px solid darkgrey;
+    color: black;
+    font-size: 16px;
+    margin: 0 2px;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
 }
+
+.pagination .active {
+    background-color: #4CAF50;
+    border: 1px solid #4CAF50;
+    color: white;
+}
+
+.pagination a:hover:not(.active) { background-color: lightgrey; }
+
+.custom-table {
+    border: 2px inset rgb(228, 221, 221);
+    border-radius: 7px;
+    margin: 0 auto;
+    text-align: center;
+    width: 75%;
+}
+
+/* The alert message box */
+
+.alert {
+    border-radius: 6px;
+    color: white;
+    margin-bottom: 15px;
+    padding: 20px;
+}
+
+/* The close button */
+
+.closebtn {
+    color: white;
+    cursor: pointer;
+    float: right;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 20px;
+    margin-left: 15px;
+    transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+
+.closebtn:hover { color: black; }
+
+.custom-table th:last-child, td:last-child {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.custom-table th td { border: 1px inset rgb(237, 237, 237); }
+
+.table-link { color: rgb(65, 65, 65); }
+
+.table-link:hover { color: rgb(14, 14, 14) }
 
 /* Set padding to keep content from hitting the edges */
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
@@ -35,17 +81,13 @@
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
-.dl-horizontal dt {
-    white-space: normal;
-}
+
+.dl-horizontal dt { white-space: normal; }
 
 /* Set width on the form input elements since they're 100% wide by default */
+
 input,
 select,
-textarea {
-    max-width: 280px;
-}
+textarea { max-width: 280px; }
 
-.main-body {
-    margin-top: 20px;
-}
+.main-body { margin-top: 20px; }

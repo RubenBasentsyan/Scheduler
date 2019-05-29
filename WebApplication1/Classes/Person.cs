@@ -2,22 +2,27 @@
 
 namespace WebApplication1.Classes
 {
-	/// <summary>
-	/// Student or Teacher
-	/// </summary>
-	public class Person
+    /// <summary>
+    ///     Student or Teacher
+    /// </summary>
+    public class Person
     {
-        public int id { get; set; }
-        private string name { get; set; }
-		private HashSet<Course> course { get; set; }
-
-		public Person(int id, string name, HashSet<Course> courses)
+        public Person(int id)
         {
-            this.id = id;
-            this.name = name;
-			course = course;
+            Id = id;
         }
-		public override bool Equals(object obj) => obj != null && obj.GetType() == typeof(Person) && obj.GetHashCode() == id;
-		public override int GetHashCode() => id;
-	}
+
+        public int Id { get; set; }
+        private HashSet<Course> Course { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Person && obj.GetHashCode() == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
 }

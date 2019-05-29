@@ -6,10 +6,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2> @(ViewBag.Person?.Name)'s Enrollments  </h2>
+<h2> @(ViewBag.Person?.Name)'s Enrollments </h2>
 
-<p> 
-    @Html.ActionLink($"Enroll {ViewBag.Person?.Name} In a New Course", "CreateForParticipant",routeValues:new{ participantId = ViewBag.Person.PersonId},htmlAttributes: new{@class = "btn btn-outline-success "})
+<p>
+    @Html.ActionLink($"Enroll {ViewBag.Person?.Name} In a New Course", "CreateForParticipant", new {participantId = ViewBag.Person.PersonId}, new {@class = "btn btn-outline-success "})
 </p>
 <table class="table table-striped table-bordered table-hover custom-table">
     <tr>
@@ -19,15 +19,16 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model ?? new List<DisplayEnrollmentVm>()){
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.CourseName)
-        </td>
-        <td>
-            @Html.ActionLink("Unenroll", "Delete", new { id = item.EnrollmentId }, htmlAttributes: new { @class = "btn btn-outline-danger btn-sm" })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model ?? new List<DisplayEnrollmentVm>())
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseName)
+            </td>
+            <td>
+                @Html.ActionLink("Unenroll", "Delete", new {id = item.EnrollmentId}, new {@class = "btn btn-outline-danger btn-sm"})
+            </td>
+        </tr>
+    }
 
 </table>

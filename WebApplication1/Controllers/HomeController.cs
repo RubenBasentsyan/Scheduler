@@ -1,35 +1,50 @@
-﻿using System.Web.Mvc;
-using WebApplication1.Helpers;
-using WebApplication1.Services;
-using WebApplication1.Models.ViewModels;
+﻿using System;
+using System.Web.Mvc;
 using System.Web.Security;
+using WebApplication1.Helpers;
+using WebApplication1.Models.ViewModels;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
             ViewBag.isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
-            var schedule = EntityFetcher.FetchSchedule();
-            ViewBag.Message = TempData["message"];
+            var schedule = EntityFetcher.FetchSchedule(page);
+            ViewBag.currentPage = page;
+            ViewBag.maxPage = EntityFetcher.SchedulePagesCount;
+            ViewBag.isParamSuccess = TempData["paramSuccess"];
+            ViewBag.messageState = TempData["messageState"];
+            ViewBag.message = TempData["message"];
             return View(schedule);
         }
 
         [Authorize]
         public ActionResult Reschedule()
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
-                EntityModifier.Reschedule();
+                try
+                {
+                    EntityModifier.Reschedule();
+                }
+                catch (Exception e)
+                {
+                    TempData["messageState"] = 2;
+                    TempData["message"] = e.Message;
+                }
+
                 return RedirectToAction("Index");
             }
+
             return RedirectToAction("Login", "Home");
         }
-        
+
 
         public ActionResult Login()
         {
@@ -39,10 +54,9 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(ParticipantsViewModel person) 
+        public ActionResult Login(ParticipantsViewModel person)
         {
             if (ModelState["Username"] != null && ModelState["Password"] != null)
-            {
                 try
                 {
                     EntityFetcher.FetchLoginUser(person.Username, person.Password);
@@ -54,7 +68,7 @@ namespace WebApplication1.Controllers
                 {
                     ModelState.AddModelError("", "Invalid Username or Password");
                 }
-            }
+
             return View();
         }
 
@@ -64,6 +78,5 @@ namespace WebApplication1.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("Login");
         }
-
     }
 }

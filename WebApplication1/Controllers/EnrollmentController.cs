@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using System.Linq;
-using System.Web;
+﻿using System.Data;
+using System.Data.Entity.Validation;
 using System.Web.Mvc;
+using WebApplication1.Helpers;
 using WebApplication1.Models.ViewModels.Enrollments;
 using WebApplication1.Services;
-using WebApplication1.Helpers;
 
 namespace WebApplication1.Controllers
 {
@@ -17,7 +13,7 @@ namespace WebApplication1.Controllers
         // GET: Enrollment
         public ActionResult CourseEnrollments(int courseId)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
@@ -25,13 +21,14 @@ namespace WebApplication1.Controllers
                 ViewBag.Course = EntityFetcher.FetchCourseWithId(courseId);
                 return View(EntityFetcher.FetchCourseEnrollments(courseId));
             }
+
             return RedirectToAction("Login", "Home");
         }
 
         [Authorize]
         public ActionResult PersonEnrollments(int personId)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
@@ -39,17 +36,18 @@ namespace WebApplication1.Controllers
                 ViewBag.Person = EntityFetcher.FetchParticipantWithId(personId);
                 return View(EntityFetcher.FetchPersonEnrollments(personId));
             }
+
             return RedirectToAction("Login", "Home");
         }
 
         [Authorize]
         public ActionResult CreateForCourse(int courseId)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
-                var enrollment = new CreateEnrollmentVm() { CourseId = courseId };
+                var enrollment = new CreateEnrollmentVm {CourseId = courseId};
                 try
                 {
                     ViewBag.CourseName = EntityFetcher.FetchCourseWithId(courseId).Name;
@@ -59,16 +57,18 @@ namespace WebApplication1.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
+
                 return View(enrollment);
             }
+
             return RedirectToAction("Login", "Home");
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult CreateForCourse (CreateEnrollmentVm enrollment)
+        public ActionResult CreateForCourse(CreateEnrollmentVm enrollment)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
@@ -76,24 +76,27 @@ namespace WebApplication1.Controllers
                 {
                     EntityModifier.CreateEnrollment(enrollment);
                 }
-                catch (System.Data.Entity.Validation.DbEntityValidationException)
+                catch (DbEntityValidationException)
                 {
-                    ModelState.AddModelError("PersonId", "Something went wrong, this participant likely no longer exists.");
+                    ModelState.AddModelError("PersonId",
+                        "Something went wrong, this participant likely no longer exists.");
                     return View(enrollment);
                 }
-                return RedirectToAction("CourseEnrollments", new { courseId = enrollment.CourseId });
+
+                return RedirectToAction("CourseEnrollments", new {courseId = enrollment.CourseId});
             }
+
             return RedirectToAction("Login", "Home");
         }
 
         [Authorize]
         public ActionResult CreateForParticipant(int participantId)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
-                var enrollment = new CreateEnrollmentVm() { ParticipantId = participantId };
+                var enrollment = new CreateEnrollmentVm {ParticipantId = participantId};
                 try
                 {
                     ViewBag.ParticipantName = EntityFetcher.FetchParticipantWithId(participantId).Name;
@@ -103,8 +106,10 @@ namespace WebApplication1.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
+
                 return View(enrollment);
             }
+
             return RedirectToAction("Login", "Home");
         }
 
@@ -112,7 +117,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult CreateForParticipant(CreateEnrollmentVm enrollment)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
@@ -120,27 +125,29 @@ namespace WebApplication1.Controllers
                 {
                     EntityModifier.CreateEnrollment(enrollment);
                 }
-                catch (System.Data.Entity.Validation.DbEntityValidationException)
+                catch (DbEntityValidationException)
                 {
                     ModelState.AddModelError("CourseId", "Something went wrong, this course likely no longer exists.");
                     return View(enrollment);
                 }
-                return RedirectToAction("PersonEnrollments", new { personId = enrollment.ParticipantId });
+
+                return RedirectToAction("PersonEnrollments", new {personId = enrollment.ParticipantId});
             }
+
             return RedirectToAction("Login", "Home");
         }
 
         [Authorize]
-        public ActionResult Delete( int id )
+        public ActionResult Delete(int id)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
                 TempData.Keep();
                 try
                 {
-                    TempData["Url"] = (Request?.UrlReferrer?.ToString() ?? "/Home/Index");
+                    TempData["Url"] = Request?.UrlReferrer?.ToString() ?? "/Home/Index";
                     return View(EntityFetcher.FetchEnrollment(id));
                 }
                 catch (DataException)
@@ -148,6 +155,7 @@ namespace WebApplication1.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
+
             return RedirectToAction("Login", "Home");
         }
 
@@ -155,16 +163,15 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Delete(DisplayEnrollmentVm enrollment)
         {
-            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(this.HttpContext));
+            var isAdmin = EntityFetcher.FetchUserAdminStatus(Methods.GetUsernameFromCookie(HttpContext));
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
                 EntityModifier.DeleteEnrollment(enrollment.EnrollmentId);
                 return Redirect(TempData["Url"].ToString());
             }
+
             return RedirectToAction("Login", "Home");
         }
-
-
     }
 }
