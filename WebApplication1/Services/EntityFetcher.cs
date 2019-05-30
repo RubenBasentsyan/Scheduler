@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using WebApplication1.Helpers;
@@ -12,7 +13,7 @@ namespace WebApplication1.Services
     /// </summary>
     public static class EntityFetcher
     {
-        private static readonly int PageSize = 13;
+        private const int PageSize = 13;
 
         // Course Fetchers 
         public static IEnumerable<CourseViewModel> FetchAllCourses
@@ -33,7 +34,7 @@ namespace WebApplication1.Services
                 using (var db = new SchedulerEntities())
                 {
                     var entryCount = db.Courses.Count();
-                    return entryCount % PageSize == 0 ? entryCount / PageSize : entryCount / PageSize + 1;
+                    return entryCount % PageSize == 0 ? Math.Max(entryCount / PageSize, 1) : entryCount / PageSize + 1;
                 }
             }
         }
@@ -45,7 +46,7 @@ namespace WebApplication1.Services
                 using (var db = new SchedulerEntities())
                 {
                     var entryCount = db.Colors.Count();
-                    return entryCount % PageSize == 0 ? entryCount / PageSize : entryCount / PageSize + 1;
+                    return entryCount % PageSize == 0 ? Math.Max(entryCount / PageSize, 1) : entryCount / PageSize + 1;
                 }
             }
         }
@@ -69,8 +70,8 @@ namespace WebApplication1.Services
             {
                 using (var db = new SchedulerEntities())
                 {
-                    var entryCount = db.Persons.Count();
-                    return entryCount % PageSize == 0 ? entryCount / PageSize : entryCount / PageSize + 1;
+                    var entryCount = db.Persons.Count(persons => persons.IsAdmin!=true);
+                    return entryCount % PageSize == 0 ? Math.Max(entryCount/PageSize,1)  : entryCount / PageSize + 1;
                 }
             }
         }

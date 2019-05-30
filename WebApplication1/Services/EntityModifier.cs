@@ -113,7 +113,7 @@ namespace WebApplication1.Services
                 if (dbPerson == null)
                     throw new DataException(
                         "The table Course does not contain an entry corresponding to the provided primary key");
-                db.Entry(dbPerson).State = EntityState.Deleted;
+                db.Persons.Remove(dbPerson);
                 db.SaveChanges();
             }
         }

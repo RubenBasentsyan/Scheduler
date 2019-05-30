@@ -264,7 +264,6 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <Content Include="ForMayis.dacpac" />
     <EntityDeploy Include="SchedulerEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SchedulerEntities.Designer.cs</LastGenOutput>
@@ -272,6 +271,7 @@
     <Content Include="SchedulerEntities.edmx.diagram">
       <DependentUpon>SchedulerEntities.edmx</DependentUpon>
     </Content>
+    <Content Include="db.dacpac" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="525227ba4d70465c8fe67a99c291fa9d" Name="Diagram1">
-        <EntityTypeShape EntityType="ScheduleModel.Colors" Width="1.5" PointX="3.875" PointY="4.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScheduleModel.Courses" Width="1.5" PointX="0.5" PointY="3.875" IsExpanded="true" />
+      <Diagram DiagramId="fbd4226f63a94f4193a1f1dc1fe1b76a" Name="Diagram1">
+        <EntityTypeShape EntityType="ScheduleModel.Colors" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScheduleModel.Courses" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ScheduleModel.Entrollments" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScheduleModel.Persons" Width="1.5" PointX="6.25" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScheduleModel.Persons" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <AssociationConnector Association="ScheduleModel.FK_Colors_ToCourses" ManuallyRouted="false" />
         <AssociationConnector Association="ScheduleModel.FK_Entrollments_ToCourses" ManuallyRouted="false" />
         <AssociationConnector Association="ScheduleModel.FK_Entrollments_ToPersons" ManuallyRouted="false" />
