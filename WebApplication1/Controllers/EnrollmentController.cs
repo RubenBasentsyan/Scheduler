@@ -32,7 +32,6 @@ namespace WebApplication1.Controllers
             ViewBag.isAdmin = isAdmin;
             if (isAdmin == true)
             {
-                //TempData["Info"] = new { from = "person", id = personId };
                 ViewBag.Person = EntityFetcher.FetchParticipantWithId(personId);
                 return View(EntityFetcher.FetchPersonEnrollments(personId));
             }

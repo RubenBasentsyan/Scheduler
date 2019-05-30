@@ -3,9 +3,7 @@
 namespace WebApplication1.Helpers
 {
     public class Color
-    {
-        private static int[,] _limits = new int[MaxDays, MaxTimeSlots];
-
+    { 
         private Color(int day, int timeSlot)
         {
             Day = day;
@@ -18,6 +16,7 @@ namespace WebApplication1.Helpers
         public static int MaxDays { get; private set; } = 6;
         public static int MaxTimeSlots { get; private set; } = 3;
         public static int ConcurrencyLimit { get; private set; } = 6;
+        private static int[,] _limits = new int[MaxDays, MaxTimeSlots];
 
         /// <summary>
         ///     Sets the concurrency limit, if it's stricter than the previous,

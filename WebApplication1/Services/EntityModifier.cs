@@ -33,10 +33,10 @@ namespace WebApplication1.Services
         /// <returns>Whether or not any of the parameters became stricter.</returns>
         public static bool SetSchedulingParameters(ParametersViewModel parameters)
         {
-            return (parameters.Days != Color.MaxDays && Color.SetConcurrencyLimit(parameters.ConcurrencyLimit)) |
-                   (parameters.TimeSlots != Color.MaxTimeSlots && Color.SetMaxDays(parameters.Days)) |
+            return (parameters.Days != Color.MaxDays && Color.SetMaxDays(parameters.Days)) |
+                   (parameters.TimeSlots != Color.MaxTimeSlots && Color.SetMaxTimeSlots(parameters.TimeSlots)) |
                    (parameters.ConcurrencyLimit != Color.ConcurrencyLimit &&
-                    Color.SetMaxTimeSlots(parameters.TimeSlots));
+                    Color.SetConcurrencyLimit(parameters.ConcurrencyLimit));
         }
 
         public static void EditCourse(CourseViewModel course)
@@ -109,11 +109,11 @@ namespace WebApplication1.Services
         {
             using (var db = new SchedulerEntities())
             {
-                var dbPerson = db.Courses.Find(participant.PersonId);
+                var dbPerson = db.Persons.Find(participant.PersonId);
                 if (dbPerson == null)
                     throw new DataException(
                         "The table Course does not contain an entry corresponding to the provided primary key");
-                db.Courses.Remove(dbPerson);
+                db.Entry(dbPerson).State = EntityState.Deleted;
                 db.SaveChanges();
             }
         }

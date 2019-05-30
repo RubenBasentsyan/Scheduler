@@ -117,9 +117,7 @@ namespace WebApplication1.Services
             using (var db = new SchedulerEntities())
             {
                 var dbUser = db.Persons.SingleOrDefault(usr => usr.Username == username);
-                if (dbUser == null) throw new DataException("The user was not found");
-
-                return dbUser.IsAdmin;
+                return dbUser?.IsAdmin == true;
             }
         }
 
@@ -269,7 +267,7 @@ namespace WebApplication1.Services
             {
                 var enrolledParticipantIds =
                     new HashSet<int>(db.Courses.Find(courseId).Entrollments.Select(w => w.Person_Fk));
-                return db.Persons.Where(c => !enrolledParticipantIds.Contains(c.Id))
+                return db.Persons.Where(c => !enrolledParticipantIds.Contains(c.Id) &&c.IsAdmin!=true)
                     .Select(c => new ParticipantsViewModel {PersonId = c.Id, Name = c.Name}).ToList();
             }
         }
